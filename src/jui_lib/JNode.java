@@ -29,8 +29,8 @@ public class JNode {
     static int UNI_CONTAINER_MARGIN_X = 5;
     static int UNI_CONTAINER_MARGIN_Y = 5;
     static int UNI_CONTAINER_SPACING = 5;
-    static int UNI_TEXT_COLOR = 0x000000;
-    static float UNI_FONT_SCALAR = .8f;
+    static int UNI_TEXT_COLOR = 0X0000;
+    static float UNI_FONT_SCALAR = 1.5f;
     public static PFont UNI_FONT;
     static private int colorMode = PApplet.RGB;
     static private PApplet parent;

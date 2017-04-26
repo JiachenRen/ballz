@@ -247,6 +247,21 @@ public abstract class Container extends Displayable {
     public Container applyLayoutToNodes() {
         for (int i = displayables.size() - 1; i >= 0; i--) {
             Displayable displayable = displayables.get(i);
+            /*instanceof, learned April 22nd.*/
+            if (displayable instanceof Container) {
+                Container container = (Container) displayable;
+                container.setContainerVisible(containerVisible);
+                container.setSpacing(spacing);
+                container.setMargins(marginX, marginY);
+                container.applyLayoutToNodes();
+            }
+        }
+        return this;
+    }
+
+    public Container applyStyleToNodes() {
+        for (int i = displayables.size() - 1; i >= 0; i--) {
+            Displayable displayable = displayables.get(i);
             displayable.setBackgroundColor(backgroundColor);
             displayable.setMouseOverBackgroundColor(mouseOverBackgroundColor);
             displayable.setMousePressedBackgroundColor(mousePressedBackgroundColor);
@@ -256,16 +271,11 @@ public abstract class Container extends Displayable {
             displayable.setContourThickness(contourThickness);
             displayable.setRounded(isRounded);
             displayable.setRounding(rounding);
-            Container container = null;
-            /*instance of, learned April 22nd.*/
+
+            /*instanceof, learned April 22nd.*/
             if (displayable instanceof Container) {
-                container = (Container) displayable;
-            }
-            if (container != null) {
-                container.setContainerVisible(containerVisible);
-                container.setSpacing(spacing);
-                container.setMargins(marginX, marginY);
-                container.applyLayoutToNodes();
+                Container container = (Container) displayable;
+                container.applyStyleToNodes();
             }
         }
         return this;
@@ -310,9 +320,9 @@ public abstract class Container extends Displayable {
         return null;
     }
 
-    public int visibleDisplayables(){
+    public int visibleDisplayables() {
         int c = 0;
-        for (Displayable displayable: displayables)
+        for (Displayable displayable : displayables)
             if (displayable.isVisible())
                 c++;
         return c;

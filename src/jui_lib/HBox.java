@@ -92,7 +92,7 @@ public class HBox extends Container {
             occupied += availableWidth() * displayable.getRelativeW();
         }
         if (occupied > availableWidth()) {
-            System.err.println("Error: not enough available space for all sub-class displayables");
+            System.err.println(id+": not enough available space for all sub-class displayables");
             return -1;
         }
         return availableWidth() - occupied;

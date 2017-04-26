@@ -48,6 +48,8 @@ public class Main extends PApplet {
     public static int bonusColor;
     public static int scoreColor;
     public static int displayColor;
+    public static int uiTextColor;
+    public static int uiColor;
     public static int blockColor1 = 150, blockColor2 = 100, blockColor3 = 255;
     /**
      * the values that are to be retrieved from the records.txt
@@ -153,7 +155,7 @@ public class Main extends PApplet {
         gamePanel = new VBox("gameUI", gamePanelPercentage, 1.0f);
         mainFrame.add(gamePanel);
 
-        HBox topBar = new HBox("topBar", 1.0f, .1f);
+        HBox topBar = new HBox("topBar", 1.0f, .05f);
         topBar.setMarginX(0);
         gamePanel.add(topBar);
 
@@ -206,7 +208,7 @@ public class Main extends PApplet {
         gamePanel.add(contextContainer);
 
         /*UI group that locates below the main game container*/
-        Container bottomBar = new HBox("bottomBar", 1.0f, .1f)
+        Container bottomBar = new HBox("bottomBar", 1.0f, .05f)
                 .setMarginX(0);
         gamePanel.add(bottomBar);
 
@@ -238,7 +240,7 @@ public class Main extends PApplet {
         mainFrame.add(settingsPanel);
 
         /*settings label and the wrapper at the top*/
-        VBox settingsLabelWrapper = new VBox("settingsLabelWrapper", 1.0f, 0.1f);
+        VBox settingsLabelWrapper = new VBox("settingsLabelWrapper", 1.0f, 0.05f);
         settingsPanel.add(settingsLabelWrapper);
 
         Label settingsLabel = new Label("settingsLabel");
@@ -253,7 +255,7 @@ public class Main extends PApplet {
         /*
         width UI
          */
-        HBox widthLabelWrapper = new HBox("widthLabelWrapper", 1.0f, 0.05f);
+        HBox widthLabelWrapper = new HBox("widthLabelWrapper", 1.0f, 0.03f);
         widthLabelWrapper.setMargins(0, 0);
         settingsItemsWrapper.add(widthLabelWrapper);
 
@@ -266,7 +268,7 @@ public class Main extends PApplet {
         widthLabelWrapper.add(widthValueLabel);
 
         /*JUI slider that controls the width of the game*/
-        HSlider widthPercentageSlider = new HSlider("widthPercentageSlider", 1.0f, 0.05f);
+        HSlider widthPercentageSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
         widthPercentageSlider.setRollerShape(RECT);
         widthPercentageSlider.setBarScalingFactor(0.5f);
         widthPercentageSlider.setRange(.3f, .8f);
@@ -277,7 +279,7 @@ public class Main extends PApplet {
         });
         settingsItemsWrapper.add(widthPercentageSlider);
 
-        Button applyWidthButton = new Button("applyWidthButton", 1.0f, 0.05f);
+        Button applyWidthButton = new Button("applyWidthButton", 1.0f, 0.025f);
         applyWidthButton.setContent("Apply");
         applyWidthButton.onClick(this::setup);
         settingsItemsWrapper.add(applyWidthButton);
@@ -285,7 +287,7 @@ public class Main extends PApplet {
         /*
         acceleration UI
         */
-        HBox accLabelWrapper = new HBox("accLabelWrapper", 1.0f, 0.05f);
+        HBox accLabelWrapper = new HBox("accLabelWrapper", 1.0f, 0.03f);
         accLabelWrapper.setMargins(0, 0);
         settingsItemsWrapper.add(accLabelWrapper);
 
@@ -306,7 +308,7 @@ public class Main extends PApplet {
         });
         accLabelWrapper.add(accEnabledButton);
 
-        HSlider accSlider = new HSlider("widthPercentageSlider", 1.0f, 0.05f);
+        HSlider accSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
         accSlider.setRollerShape(RECT);
         accSlider.setBarScalingFactor(0.5f);
         accSlider.setRange(1.005f, 1.018f);
@@ -321,7 +323,7 @@ public class Main extends PApplet {
         /*
         fps UI
          */
-        HBox fpsLabelWrapper = new HBox("fpsLabelWrapper", 1.0f, 0.05f);
+        HBox fpsLabelWrapper = new HBox("fpsLabelWrapper", 1.0f, 0.03f);
         fpsLabelWrapper.setMargins(0, 0);
         settingsItemsWrapper.add(fpsLabelWrapper);
 
@@ -329,7 +331,7 @@ public class Main extends PApplet {
         fpsLabel.setContent("FPS");
         fpsLabelWrapper.add(fpsLabel);
 
-        HSlider fpsSlider = new HSlider("fpsSlider", 1.0f, 0.05f);
+        HSlider fpsSlider = new HSlider("fpsSlider", 1.0f, 0.03f);
         TextInput fpsTextInput = new TextInput("fpsTextInput");
         fpsTextInput.setDefaultContent(200 + "");
         fpsTextInput.onSubmit(() -> {
@@ -353,7 +355,7 @@ public class Main extends PApplet {
         /*
         ball speed UI
          */
-        HBox speedLabelWrapper = new HBox("speedLabelWrapper", 1.0f, 0.05f);
+        HBox speedLabelWrapper = new HBox("speedLabelWrapper", 1.0f, 0.03f);
         speedLabelWrapper.setMargins(0, 0);
         settingsItemsWrapper.add(speedLabelWrapper);
 
@@ -361,7 +363,7 @@ public class Main extends PApplet {
         speedLabel.setContent("Speed");
         speedLabelWrapper.add(speedLabel);
 
-        HSlider speedSlider = new HSlider("speedSlider", 1.0f, 0.05f);
+        HSlider speedSlider = new HSlider("speedSlider", 1.0f, 0.03f);
         TextInput speedTextInput = new TextInput("speedTextInput");
         speedTextInput.setDefaultContent(ballInitVelocity + "");
         speedTextInput.onSubmit(() -> {
@@ -389,7 +391,7 @@ public class Main extends PApplet {
         /*
         ball radius UI
          */
-        HBox diameterLabelWrapper = new HBox("diameterLabelWrapper", 1.0f, 0.05f);
+        HBox diameterLabelWrapper = new HBox("diameterLabelWrapper", 1.0f, 0.03f);
         diameterLabelWrapper.setMargins(0, 0);
         settingsItemsWrapper.add(diameterLabelWrapper);
 
@@ -397,7 +399,7 @@ public class Main extends PApplet {
         diameterLabel.setContent("Diameter");
         diameterLabelWrapper.add(diameterLabel);
 
-        HSlider diameterSlider = new HSlider("diameterSlider", 1.0f, 0.05f);
+        HSlider diameterSlider = new HSlider("diameterSlider", 1.0f, 0.03f);
         TextInput diameterTextInput = new TextInput("diameterTextInput");
         diameterTextInput.setDefaultContent(ballDiameter + "");
         diameterTextInput.onSubmit(() -> {
@@ -423,11 +425,11 @@ public class Main extends PApplet {
         /*
         UI that enables the user to adjust the level.
          */
-        Label adjustLevelLabel = new Label("adjustLevelLabel", 1.0f, 0.05f);
+        Label adjustLevelLabel = new Label("adjustLevelLabel", 1.0f, 0.025f);
         adjustLevelLabel.setContent("Set Level");
         settingsItemsWrapper.add(adjustLevelLabel);
 
-        TextInput adjustLevelTextInput = new TextInput("adjustLevelTextInput", 1.0f, 0.05f);
+        TextInput adjustLevelTextInput = new TextInput("adjustLevelTextInput", 1.0f, 0.025f);
         adjustLevelTextInput.setStaticContent(Main.level + "");
         adjustLevelTextInput.onSubmit(() -> {
             Main.level = adjustLevelTextInput.getIntValue();
@@ -439,11 +441,11 @@ public class Main extends PApplet {
         /*
         UI that enables the user to adjust the number of balls.
          */
-        Label adjustBallNumLabel = new Label("adjustBallNumLabel", 1.0f, 0.05f);
+        Label adjustBallNumLabel = new Label("adjustBallNumLabel", 1.0f, 0.025f);
         adjustBallNumLabel.setContent("Balls");
         settingsItemsWrapper.add(adjustBallNumLabel);
 
-        TextInput adjustBallNumTextInput = new TextInput("adjustBallNumTextInput", 1.0f, 0.05f);
+        TextInput adjustBallNumTextInput = new TextInput("adjustBallNumTextInput", 1.0f, 0.025f);
         adjustBallNumTextInput.setStaticContent(Context.numBalls + "");
         adjustBallNumTextInput.onSubmit(() -> {
             context.setNumBalls(adjustBallNumTextInput.getIntValue());
@@ -453,7 +455,7 @@ public class Main extends PApplet {
         /*
         UI that controls the relative width of the context.
          */
-        ValueSelector contextWidthSelector = new ValueSelector("contextWidthSelector", 1.0f, 0.05f);
+        ValueSelector contextWidthSelector = new ValueSelector("contextWidthSelector", 1.0f, 0.08f);
         contextWidthSelector.setStyle(ValueSelector.Style.COMPOSITE);
         contextWidthSelector.setTitle("Context Width");
         contextWidthSelector.setTitlePercentage(0.2f);
@@ -465,12 +467,59 @@ public class Main extends PApplet {
         });
         settingsItemsWrapper.add(contextWidthSelector);
 
+        settingsItemsWrapper.add(new Displayable("spaceHolder", 1.0f, 0.05f).setVisible(false));
+        settingsItemsWrapper.add(new Label("uiLayoutLabel", 1.0f, 0.04f).setContent("User Interface"));
+
+        Button displayUiContourButton = new Button("displayUiContourButton", 1.0f, 0.025f).setContent("Display Contour");
+        displayUiContourButton.onClick(() -> {
+            boolean temp = displayUiContourButton.getContent().equals("Display Contour");
+            displayUiContourButton.setContent(temp ? "Hide Contour" : "Display Contour");
+            for (Displayable displayable : JNode.getDisplayables()) {
+                displayable.setContourVisible(temp);
+            }
+        });
+        settingsItemsWrapper.add(displayUiContourButton);
+
+        Button uiContainerVisibleButton = new Button("uiContainerVisibleButton", 1.0f, 0.025f).setContent("Show Container");
+        uiContainerVisibleButton.onClick(() -> {
+            boolean temp = uiContainerVisibleButton.getContent().equals("Show Container");
+            uiContainerVisibleButton.setContent(temp ? "Hide Container" : "Show Container");
+            for (Displayable displayable : JNode.getDisplayables()) {
+                if (displayable instanceof Container) {
+                    ((Container) displayable).setContainerVisible(temp);
+                }
+            }
+        });
+        settingsItemsWrapper.add(uiContainerVisibleButton);
+
+        Button roundedButton = new Button("roundedButton", 1.0f, 0.025f).setContent("Rounded");
+        roundedButton.onClick(() -> {
+            boolean temp = roundedButton.getContent().equals("Rounded");
+            roundedButton.setContent(temp ? "Rectangular" : "Rounded");
+            for (Displayable displayable : JNode.getDisplayables()) {
+                displayable.setRounded(!temp);
+            }
+        });
+        settingsItemsWrapper.add(roundedButton);
+
+        ValueSelector uiRoundingSelector = new ValueSelector("uiRoundingSelector", 1.0f, 0.06f)
+                .setTitle("Rounding Index")
+                .setRange(3, 20)
+                .setValue(5);
+        uiRoundingSelector.link(() -> {
+            for (Displayable displayable : JNode.getDisplayables()) {
+                int temp = uiRoundingSelector.getIntValue();
+                displayable.setRounding(temp);
+            }
+        });
+        settingsItemsWrapper.add(uiRoundingSelector);
+
         /*advanced settings panel that provides more detailed controls*/
         advancedPanel = new VBox("advancedPanel");
         //advancedPanel.setContainerVisible(true);
         mainFrame.add(advancedPanel);
 
-        VBox advancedLabelWrapper = new VBox("advancedLabelWrapper", 1.0f, 0.1f);
+        VBox advancedLabelWrapper = new VBox("advancedLabelWrapper", 1.0f, 0.05f);
         advancedPanel.add(advancedLabelWrapper);
 
         Label advancedLabel = new Label("advancedLabel");
@@ -478,14 +527,17 @@ public class Main extends PApplet {
         advancedLabelWrapper.add(advancedLabel);
 
         /*Color Selector for various objects in the game*/
-        ColorSelector colorSelector = new ColorSelector("colorSelector", 1.0f, .25f);
-        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background");
+        ColorSelector colorSelector = new ColorSelector("colorSelector", 1.0f, .3f);
+        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background", "UI Text", "UI App");
         colorSelector.setColorRGBA("Balls", 255, 255, 255, 255);
         colorSelector.setColorRGBA("Debris", 255, 200, 10, 200);
         colorSelector.setColorRGBA("Background", 0, 0, 0, 255);
         colorSelector.setColorRGBA("Bonus", 255, 255, 255, 220);
         colorSelector.setColorRGBA("Score", 102, 255, 255, 220);
         colorSelector.setColorRGBA("Display", 255, 255, 255, 255);
+        colorSelector.setColorRGBA("UI Text", 0, 0, 0, 255);
+        colorSelector.setColorRGBA("UI App", 50, 50, 50, 50);
+
         colorSelector.link("Display", () -> {
             displayColor = colorSelector.getColorRGBA("Display");
         });
@@ -500,6 +552,28 @@ public class Main extends PApplet {
         });
         colorSelector.link("Balls", () -> {
             ballColor = colorSelector.getColorRGBA("Balls");
+        });
+
+        /*a change listener, for computational expensive operations*/
+        colorSelector.link("UI Text", () -> {
+            int temp = colorSelector.getColorRGBA("UI Text");
+            if (uiTextColor != temp) {
+                for (Displayable displayable : JNode.getDisplayables()) {
+                    if (displayable instanceof Contextual) {
+                        ((Contextual) displayable).setTextColor(temp);
+                    }
+                }
+                uiTextColor = temp;
+            }
+        });
+        colorSelector.link("UI App", () -> {
+            int temp = colorSelector.getColorRGBA("UI App");
+            if (uiColor != temp) {
+                for (Displayable displayable : JNode.getDisplayables()) {
+                    displayable.setBackgroundColor(temp);
+                }
+                uiColor = temp;
+            }
         });
         ballColor = colorSelector.getColorRGBA("Balls");
         debrisColor = colorSelector.getColorRGBA("Debris");
@@ -549,13 +623,22 @@ public class Main extends PApplet {
         });
         advancedPanel.add(blockColor3Selector);
 
-        VBox dimensionSelectorsWrapper = new VBox("dimensionSelectorsWrapper", 1.0f, 0.4f);
-        dimensionSelectorsWrapper.setAlignH(CENTER);
+        /*experimental: an expandable & collapsible container*/
+        VBox dimensionSelectorsWrapper = new VBox("dimensionSelectorsWrapper", 1.0f, 0.35f);
+        dimensionSelectorsWrapper.setAlignH(LEFT).setMargins(0, 0).setVisible(false);
+        Button showMoreOptionsButton = new Button("showMoreOptionsButton", 1.0f, 0.03f)
+                .setContent("More");
+        showMoreOptionsButton.onClick(() -> {
+            boolean temp = dimensionSelectorsWrapper.isVisible();
+            dimensionSelectorsWrapper.setVisible(!temp);
+            String str = showMoreOptionsButton.getContent();
+            showMoreOptionsButton.setContent(str.equals("More") ? "Less" : "More");
+        });
+        advancedPanel.add(showMoreOptionsButton);
         advancedPanel.add(dimensionSelectorsWrapper);
 
-
         ValueSelector rowsSelector = new ValueSelector("rowsSelector");
-        rowsSelector.setTitle("Rows");
+        rowsSelector.setTitle("Rows          ");
         rowsSelector.setTitlePercentage(0.4f);
         rowsSelector.roundTo(0);
         rowsSelector.setRange(4, 20);
@@ -563,7 +646,7 @@ public class Main extends PApplet {
         dimensionSelectorsWrapper.add(rowsSelector);
 
         ValueSelector columnsSelector = new ValueSelector("columnsSelector");
-        columnsSelector.setTitle("Columns");
+        columnsSelector.setTitle("Columns      ");
         columnsSelector.setTitlePercentage(0.4f);
         columnsSelector.roundTo(0);
         columnsSelector.setRange(4, 20);
@@ -579,14 +662,14 @@ public class Main extends PApplet {
         dimensionSelectorsWrapper.add(columnGapSelector);
 
         ValueSelector rowGapSelector = new ValueSelector("rowGapSelector");
-        rowGapSelector.setTitle("Row Gap");
+        rowGapSelector.setTitle("Row Gap     ");
         rowGapSelector.setTitlePercentage(0.4f);
         rowGapSelector.roundTo(0);
         rowGapSelector.setRange(0, 100);
         rowGapSelector.setValue(rowGap);
         dimensionSelectorsWrapper.add(rowGapSelector);
 
-        Button applyDimensionButton = new Button("applyDimensionButton", 0.95f, 0.1f);
+        Button applyDimensionButton = new Button("applyDimensionButton", 1.0f, 0.1f);
         applyDimensionButton.setContent("Apply");
         applyDimensionButton.onClick(() -> {
             rowGap = rowGapSelector.getIntValue() / 2;
@@ -607,29 +690,9 @@ public class Main extends PApplet {
         mainFrame.setBackgroundColor(50, 50, 50, 50);
         mainFrame.setSpacing(3);
         mainFrame.setMargins(3, 3);
-        mainFrame.applyLayoutToNodes();
+        mainFrame.applyStyleToNodes();
 
-
-
-        /*raw setup for color selector*/
-        colorSelector.setSpacing(0);
-        colorSelector.setContainerVisible(false);
-        //colorSelector.setFontSize(30);
-        colorSelector.setMargins(0, 0);
-
-
-        ((Container) firingRateSelector.getDisplayableById("titleWrapper")).setMargins(0, 0);
-        ((Container) blockColor1Selector.getDisplayableById("titleWrapper")).setMargins(0, 0);
-        ((Container) blockColor2Selector.getDisplayableById("titleWrapper")).setMargins(0, 0);
-        ((Container) blockColor3Selector.getDisplayableById("titleWrapper")).setMargins(0, 0);
-        ((Container) contextWidthSelector.getDisplayableById("titleWrapper")).setMargins(0, 0);
-        contextWidthSelector.setMargins(0, 0);
-
-        Container slidersContainer = (Container) colorSelector.search("slidersWrapper");
-        slidersContainer.setMargins(0, 0);
-        Container centralPanelWrapper = (Container) colorSelector.search("centralPanelWrapper");
-        centralPanelWrapper.setMargins(0, 0);
-        centralPanelWrapper.setSpacing(0);
+        dimensionSelectorsWrapper.setContainerVisible(true);
 
 
         context.setBackgroundColor(colorSelector.getColorRGBA("Background"));

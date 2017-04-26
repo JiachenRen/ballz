@@ -94,7 +94,6 @@ public class ColorSelector extends VBox {
 
         slidersWrapper = new HBox("slidersWrapper");
         slidersWrapper.setContainerVisible(false);
-        slidersWrapper.setMargins(0, 0);
 
 
         for (int i = 0; i < colorSliders.length; i++) {
@@ -125,20 +124,24 @@ public class ColorSelector extends VBox {
 
         centralPanelWrapper = new HBox("centralPanelWrapper", 1.0f, 0.8f);
         centralPanelWrapper.setMargins(0, 0);
-        centralPanelWrapper.setSpacing(0);
+        centralPanelWrapper.setSpacing(3);
         centralPanelWrapper.add(colorVarsWrapper);
         centralPanelWrapper.add(slidersWrapper);
 
-        this.setSpacing(0);
-        this.setMargins(0, 0);
+        this.setSpacing(3);
+        this.setMargins(3, 3);
         this.setRounded(true);
         this.setRounding(5);
         this.setContainerVisible(false);
         this.setAlignV(DOWN);
         this.add(titleWrapper);
         this.add(centralPanelWrapper);
-        this.applyLayoutToNodes();
+        this.applyLayoutToNodes(); // consider adding exclusion?
 
+        this.setSpacing(0);
+        this.setMargins(0, 0);
+        centralPanelWrapper.setMargins(0, 0).setSpacing(0);
+        slidersWrapper.setMargins(0, 0);
         updateRenderedColorDim();
         updateRenderedColor();
     }

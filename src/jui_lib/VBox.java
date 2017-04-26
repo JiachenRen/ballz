@@ -93,7 +93,7 @@ public class VBox extends Container {
             occupied += availableHeight() * displayable.getRelativeH();
         }
         if (occupied > availableHeight()) {
-            System.err.println("Error: not enough available space for all sub-class displayables");
+            System.err.println(id+": not enough available space for all sub-class displayables");
             return -1;
         }
         return availableHeight() - occupied;

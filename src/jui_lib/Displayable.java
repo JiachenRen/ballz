@@ -90,7 +90,7 @@ public class Displayable {
 
     public Displayable setRounding(int temp) {
         rounding = temp;
-        setRounded(true);
+        //setRounded(true); removed April 26th.
         return this;
     }
 

@@ -39,7 +39,7 @@ public class Button extends Contextual implements Controllable {
         onClickMethod = mousePressedMethod = mouseHeldMethod = mouseOverMethod = mouseFloatMethod = () -> {
         };
         setTrimWidth(7);
-        setTrimHeight(13);
+        setTrimHeight(8);
     }
 
     public void display() {

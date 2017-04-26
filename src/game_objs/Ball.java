@@ -57,7 +57,7 @@ public class Ball {
             prevPos = new PVector(pos.x, pos.y);
             pos.add(dir);
 
-            /*TODO if the balls were to be constantly accelerated*/
+            /*if the balls were to be constantly accelerated*/
             if (Main.constAcc) {
                 dir.setMag(dir.mag() * Main.acc);
                 dir.limit(30); /*apply limit to the velocity*/
@@ -74,7 +74,6 @@ public class Ball {
         //display the white ball at the baseline. This is not the best way to do it!
         float radius = Main.ballDiameter / 2.0f;
         Ball ball = new Ball(parent, initPosX, initPosY - radius, new PVector());
-        //TODO don't forget to change this each time you made change to diameter.
         ball.display();
 
         /*draw the text above it indicating the number of balls*/

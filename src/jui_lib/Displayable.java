@@ -9,6 +9,10 @@ import processing.core.PImage;
 //modified April 22nd. Took me half an hour, I eliminated all rounding errors for containers!
 //primitive type for coordinate and dimension is changed from int to float. Proved to be helpful!
 //refresh requesting technique applied April 23rd
+
+/**
+ * TODO add mousePressedTextColor(), mousePressedContourColor(), mouseOverTextColor(), mouseOverContourColor();
+ */
 public class Displayable {
     public boolean displayContour = true;
     public boolean isVisible = true;
@@ -16,6 +20,8 @@ public class Displayable {
     public int mouseOverBackgroundColor = JNode.getParent().color(50, 255, 100, 180);
     public int mousePressedBackgroundColor = JNode.getParent().color(50, 255, 50, 220);
     public int contourColor = JNode.getParent().color(0);
+    public int mousePressedContourColor = JNode.getParent().color(0);
+    public int mouseOverContourColor = JNode.getParent().color(0);
     public float contourThickness = 1;
     public String id;
     public float x, y, w, h;
@@ -187,6 +193,37 @@ public class Displayable {
         return this;
     }
 
+    public Displayable setMousePressedContourColor(int r, int g, int b) {
+        mousePressedContourColor = JNode.getParent().color(r, g, b);
+
+        return this;
+    }
+
+    public Displayable setMousePressedContourColor(int c) {
+        mousePressedContourColor = c;
+        return this;
+    }
+
+    public Displayable setMousePressedContourColor(int r, int g, int b, int t) {
+        mousePressedContourColor = JNode.getParent().color(r, g, b, t);
+        return this;
+    }
+
+    public Displayable setMouseOverContourColor(int r, int g, int b) {
+        mouseOverContourColor = JNode.getParent().color(r, g, b);
+        return this;
+    }
+
+    public Displayable setMouseOverContourColor(int c) {
+        mouseOverContourColor = c;
+        return this;
+    }
+
+    public Displayable setMouseOverContourColor(int r, int g, int b, int t) {
+        mouseOverContourColor = JNode.getParent().color(r, g, b, t);
+        return this;
+    }
+
     public Displayable setContourThickness(float thickness) {
         contourThickness = thickness;
         return this;
@@ -264,8 +301,10 @@ public class Displayable {
         getParent().pushStyle();
         getParent().rectMode(PConstants.CORNER);
         if (displayContour) {
-            getParent().strokeWeight(contourThickness);
-            getParent().stroke(contourColor);
+            if (isMouseOver()) {
+                getParent().strokeWeight(contourThickness);
+                getParent().stroke(getParent().mousePressed ? mousePressedContourColor : mouseOverContourColor);
+            }
         } else {
             getParent().noStroke();
         }

@@ -12,6 +12,8 @@ import static processing.core.PConstants.RIGHT;
 public abstract class Contextual extends Displayable {
     private String content;
     private int textColor = JNode.UNI_TEXT_COLOR;
+    private int mouseOverTextColor = JNode.UNI_TEXT_COLOR;
+    private int mousePressedTextColor = JNode.UNI_TEXT_COLOR;
     public int textSize;
     public float fontScalar = JNode.UNI_FONT_SCALAR; // scalar for the default font
     public PFont font = JNode.UNI_FONT;
@@ -58,6 +60,37 @@ public abstract class Contextual extends Displayable {
         return this;
     }
 
+    public Contextual setMousePressedTextColor(int r, int g, int b) {
+        mousePressedTextColor = JNode.getParent().color(r, g, b);
+        return this;
+    }
+
+    public Contextual setMousePressedTextColor(int c) {
+        mousePressedTextColor = c;
+        return this;
+    }
+
+    public Contextual setMousePressedTextColor(int r, int g, int b, int t) {
+        mousePressedTextColor = JNode.getParent().color(r, g, b, t);
+        return this;
+    }
+
+    public Contextual setMouseOverTextColor(int r, int g, int b) {
+        mouseOverTextColor = JNode.getParent().color(r, g, b);
+        return this;
+    }
+
+    public Contextual setMouseOverTextColor(int c) {
+        mouseOverTextColor = c;
+        return this;
+    }
+
+    public Contextual setMouseOverTextColor(int r, int g, int b, int t) {
+        mouseOverTextColor = JNode.getParent().color(r, g, b, t);
+        return this;
+    }
+
+
     public int getTextColor() {
         return textColor;
     }
@@ -90,7 +123,13 @@ public abstract class Contextual extends Displayable {
     public void displayText() {
         getParent().pushMatrix();
         if (textSize > 0.0) getParent().textSize(textSize);
-        getParent().fill(textColor);
+
+        if (isMouseOver()) {
+            int color = getParent().mousePressed ? mousePressedTextColor : mouseOverTextColor;
+            getParent().fill(color);
+        } else {
+            getParent().fill(textColor);
+        }
 
         switch (alignment) {
             case PConstants.LEFT:
@@ -106,7 +145,7 @@ public abstract class Contextual extends Displayable {
                 getParent().text(content, x + w, y + h / 2 + getTextDimension(content)[1] / 2);
                 break;
             default:
-                System.err.println("Error: align-" + alignment + "cannot be applied to label. Default alignment applied.");
+                System.err.println(id + ": align-" + alignment + "cannot be applied to Label. Default alignment applied.");
                 getParent().textAlign(PConstants.LEFT);
                 getParent().text(content, x, y + h / 2 + getTextDimension(content)[1] / 2);
         }
@@ -119,5 +158,9 @@ public abstract class Contextual extends Displayable {
         content = s;
         displayText();
         content = temp;
+    }
+
+    public void setFontScalar(float temp) {
+        fontScalar = temp;
     }
 }

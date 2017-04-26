@@ -1,0 +1,20 @@
+display_contour: false
+container_visible: false
+rounded: false
+contour_thickness: 1
+rounding: 5
+font_scalar: 0.8f
+
+background_color: 255,255,255,255
+mouse_pressed_background_color: 255,255,255,255
+mouse_over_background_color: 255,255,255,255
+
+contour_color: 255,255,255,255
+mouse_pressed_contour_color:2 55,255,255,255
+mouse_over_contour_color:255,255,255,255
+
+text_color:255,255,255,255
+mouse_pressed_text_color:255,255,255,255
+mouse_over_text_color:255,255,255,255
+
+

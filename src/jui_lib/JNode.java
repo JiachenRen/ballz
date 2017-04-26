@@ -82,7 +82,6 @@ public class JNode {
         if (displayables.contains(displayable)) return;
         displayables.add(displayable);
 
-        /*TODO needs to be revised with instanceof */
         if (displayable instanceof ScrollField) {
             getScrollFields().add((ScrollField) displayable);
         } else if (displayable instanceof TextInput) {

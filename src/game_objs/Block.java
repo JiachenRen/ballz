@@ -100,7 +100,6 @@ public class Block extends Contextual {
     private float computeTextSize() {
         float textSize = (w > h ? h : w) * 2.0f / 3.0f;
         if (Integer.toString(value).length() > 2) {
-            System.out.println(Integer.toString(value).length());
             float ts = PApplet.map(Integer.toString(value).length(), 3, 5, 1.5f, .5f);
             textSize = (w > h ? h : w) * ts / 3.0f;
         }

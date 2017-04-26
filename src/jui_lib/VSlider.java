@@ -23,7 +23,11 @@ public class VSlider extends Slider implements Controllable {
         syncSettings();
     }
 
-    //Jan 4th, TODO Roller Shape Ellipse
+    /**
+     * Jan 4th, Roller Shape Ellipse needs to be added
+     * updates the position of the roller.
+     * @since April 24th roller ellipse shape is considered.
+     */
     public void updateRollerPos() {
         if (val > valueHigh || val < valueLow) {
             if (val != valueLow && val != valueHigh)

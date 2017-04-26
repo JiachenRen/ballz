@@ -5,6 +5,7 @@ import processing.core.PConstants;
 
 /**
  * Created on April 23rd. Value selector bundle
+ * TODO add setSuffix(), like km, mm, or $, %
  */
 public class ValueSelector extends VBox {
     private float titlePercentage = .35f;
@@ -116,6 +117,7 @@ public class ValueSelector extends VBox {
     /**
      * only invoke this method immediately after declaration.
      * TODO not the best way to handle this issue. To be FIXED
+     *
      * @param style the new style
      */
     public ValueSelector setStyle(Style style) {

@@ -33,7 +33,7 @@ public class Main extends PApplet {
     public static int fps = 200;
     public static int level = 1; /*represents the current level; default 1; Try 1500*/
     public static int firingRate = 100;
-    private static float gamePanelPercentage = .7f;
+    private static float gamePanelPercentage = .7f; //try .75
     private static float contextPercentage = 1.0f;
     public static int rows = 8;
     public static int columns = 7;
@@ -131,7 +131,6 @@ public class Main extends PApplet {
     public static void record(String keyWord, Number val) {
         PApplet parent = JNode.getParent();
         String lines[] = parent.loadStrings("src/data/records.txt");
-        println(lines[0]);
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].contains(keyWord)) {
                 lines[i] = keyWord + ":" + val.toString();
@@ -251,38 +250,6 @@ public class Main extends PApplet {
         VBox settingsItemsWrapper = new VBox("settingsItemsWrapper");
         settingsItemsWrapper.setAlignV(DOWN);
         settingsPanel.add(settingsItemsWrapper);
-
-        /*
-        width UI
-         */
-        HBox widthLabelWrapper = new HBox("widthLabelWrapper", 1.0f, 0.03f);
-        widthLabelWrapper.setMargins(0, 0);
-        settingsItemsWrapper.add(widthLabelWrapper);
-
-        Label widthLabel = new Label("widthLabel", .7f, 1.0f);
-        widthLabel.setContent("Width");
-        widthLabelWrapper.add(widthLabel);
-
-        Label widthValueLabel = new Label("widthValueLabel");
-        widthValueLabel.setContent((int) (gamePanelPercentage * 100) + "%");
-        widthLabelWrapper.add(widthValueLabel);
-
-        /*JUI slider that controls the width of the game*/
-        HSlider widthPercentageSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
-        widthPercentageSlider.setRollerShape(RECT);
-        widthPercentageSlider.setBarScalingFactor(0.5f);
-        widthPercentageSlider.setRange(.3f, .8f);
-        widthPercentageSlider.setValue(gamePanelPercentage);
-        widthPercentageSlider.onFocus(() -> {
-            gamePanelPercentage = widthPercentageSlider.getFloatValue();
-            widthValueLabel.setContent((int) (gamePanelPercentage * 100) + "%");
-        });
-        settingsItemsWrapper.add(widthPercentageSlider);
-
-        Button applyWidthButton = new Button("applyWidthButton", 1.0f, 0.025f);
-        applyWidthButton.setContent("Apply");
-        applyWidthButton.onClick(this::setup);
-        settingsItemsWrapper.add(applyWidthButton);
 
         /*
         acceleration UI
@@ -504,7 +471,7 @@ public class Main extends PApplet {
 
         ValueSelector uiRoundingSelector = new ValueSelector("uiRoundingSelector", 1.0f, 0.06f)
                 .setTitle("Rounding Index")
-                .setRange(3, 20)
+                .setRange(3, 15)
                 .setValue(5);
         uiRoundingSelector.link(() -> {
             for (Displayable displayable : JNode.getDisplayables()) {
@@ -513,6 +480,54 @@ public class Main extends PApplet {
             }
         });
         settingsItemsWrapper.add(uiRoundingSelector);
+
+        ValueSelector uiStrokeWeightSelector = new ValueSelector("uiStrokeWeightSelector", 1.0f, 0.06f)
+                .setTitle("Stroke Weight")
+                .setRange(0, 3)
+                .setValue(1);
+        uiStrokeWeightSelector.link(() -> {
+            for (Displayable displayable : JNode.getDisplayables()) {
+                int temp = uiStrokeWeightSelector.getIntValue();
+                displayable.setContourThickness(temp);
+            }
+        });
+        settingsItemsWrapper.add(uiStrokeWeightSelector);
+
+        settingsItemsWrapper.add(new Displayable("spaceHolder", 1.0f, 0.05f).setVisible(false));
+        settingsItemsWrapper.add(new Label("uiLayoutLabel", 1.0f, 0.04f).setContent("General"));
+        /*
+        width UI
+         */
+        HBox widthLabelWrapper = new HBox("widthLabelWrapper", 1.0f, 0.03f);
+        widthLabelWrapper.setMargins(0, 0);
+        settingsItemsWrapper.add(widthLabelWrapper);
+
+        Label widthLabel = new Label("widthLabel", .7f, 1.0f);
+        widthLabel.setContent("Width");
+        widthLabelWrapper.add(widthLabel);
+
+        Label widthValueLabel = new Label("widthValueLabel");
+        widthValueLabel.setContent((int) (gamePanelPercentage * 100) + "%");
+        widthLabelWrapper.add(widthValueLabel);
+
+        /*JUI slider that controls the width of the game*/
+        HSlider widthPercentageSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
+        widthPercentageSlider.setRollerShape(RECT);
+        widthPercentageSlider.setBarScalingFactor(0.5f);
+        widthPercentageSlider.setRange(.3f, .8f);
+        widthPercentageSlider.setValue(gamePanelPercentage);
+        widthPercentageSlider.onFocus(() -> {
+            gamePanelPercentage = widthPercentageSlider.getFloatValue();
+            widthValueLabel.setContent((int) (gamePanelPercentage * 100) + "%");
+        });
+        settingsItemsWrapper.add(widthPercentageSlider);
+
+        Button applyWidthButton = new Button("applyWidthButton", 1.0f, 0.04f);
+        applyWidthButton.setContent("Apply");
+        applyWidthButton.onClick(this::setup);
+        settingsItemsWrapper.add(applyWidthButton);
+
+
 
         /*advanced settings panel that provides more detailed controls*/
         advancedPanel = new VBox("advancedPanel");

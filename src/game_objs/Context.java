@@ -287,7 +287,7 @@ public class Context extends Displayable {
 
     public void display() {
         if (!paused) this.update();
-        drawContext();
+        super.display();
 
         /*display rows of blocks*/
         for (BlockRow blockRow : blockRows) {
@@ -307,15 +307,6 @@ public class Context extends Displayable {
         /*excellent fix! Only display the anchor ball when needed*/
         if (ballsFired == ballsRecovered || Ball.initPosRecorded)
             Ball.displayBallAnchor(parent);
-    }
-
-    private void drawContext() {
-        parent.pushStyle();
-        parent.fill(backgroundColor);
-        parent.noStroke();
-        parent.rectMode(PConstants.CORNER);
-        parent.rect(x, y, w, h);
-        parent.popStyle();
     }
 
     /**

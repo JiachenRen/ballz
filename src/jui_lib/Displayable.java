@@ -31,7 +31,8 @@ public class Displayable {
     public float x, y, w, h;
     public float relativeW = 1, relativeH = 1;
 
-    public BackgroundStyle backgroundStyle = BackgroundStyle.CONSTANT;
+    public JStyle backgroundStyle = JStyle.CONSTANT;
+    public JStyle contourStyle = JStyle.CONSTANT;
     public ImgStyle imgStyle = ImgStyle.RESERVED;
 
     public PImage backgroundImg;
@@ -43,19 +44,6 @@ public class Displayable {
     public boolean isRelative, isDependent;
 
     public String id;
-
-    public enum BackgroundStyle {
-        CONSTANT(0), VOLATILE(1), DISABLED(2);
-        private int val;
-
-        BackgroundStyle(int i) {
-            val = i;
-        }
-
-        public int getValue() {
-            return val;
-        }
-    }
 
     //TODO
     public enum ImgStyle {
@@ -312,13 +300,22 @@ public class Displayable {
         /*default displaying method. Overriding recommended*/
         getParent().pushStyle();
         getParent().rectMode(PConstants.CORNER);
-        if (displayContour) {
-            if (isMouseOver()) {
-                getParent().strokeWeight(contourThickness);
-                getParent().stroke(getParent().mousePressed ? mousePressedContourColor : mouseOverContourColor);
-            }
-        } else {
-            getParent().noStroke();
+
+        getParent().strokeWeight(contourThickness);
+        switch (contourStyle) {
+            case VOLATILE:
+                if (displayContour) {
+                    if (isMouseOver()) {
+                        getParent().stroke(getParent().mousePressed ? mousePressedContourColor : mouseOverContourColor);
+                    } else getParent().stroke(contourColor);
+                } else {
+                    getParent().noStroke();
+                }
+                break;
+            case CONSTANT:
+                if (displayContour) getParent().stroke(contourColor);
+                else getParent().noStroke();
+                break;
         }
 
         switch (backgroundStyle) {
@@ -386,8 +383,13 @@ public class Displayable {
         refreshRequested = false;
     }
 
-    public Displayable setBackgroundStyle(BackgroundStyle backgroundStyle) {
+    public Displayable setBackgroundStyle(JStyle backgroundStyle) {
         this.backgroundStyle = backgroundStyle;
+        return this;
+    }
+
+    public Displayable setContourStyle(JStyle contourStyle) {
+        this.contourStyle = contourStyle;
         return this;
     }
 

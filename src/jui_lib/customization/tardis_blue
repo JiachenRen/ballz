@@ -14,7 +14,7 @@ font_scalar: 1.5f
 
 background_color: 50,50,50,50
 mouse_pressed_background_color: 50,255,100,180
-mouse_over_background_color: 50,255,50,220
+mouse_over_background_color: 16,35,114,255
 
 contour_color: 0,0,0,255
 mouse_pressed_contour_color: 0,0,0,255
@@ -23,4 +23,5 @@ mouse_over_contour_color: 0,0,0,255
 text_color: 0,0,0,255
 mouse_pressed_text_color: 0,0,0,255
 mouse_over_text_color: 0,0,0,255
+
 

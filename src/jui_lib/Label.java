@@ -29,6 +29,7 @@ public class Label extends Contextual {
 
     public void init() {
         setContent(defaultContent);
+        setTextStyle(JStyle.CONSTANT);
         adjustTextSize();
         setAlign(PConstants.LEFT);
     }
@@ -73,7 +74,7 @@ public class Label extends Contextual {
 
     @Override
     public void resize(float w, float h) {
-        super.resize(w,h);
+        super.resize(w, h);
         adjustTextSize();
     }
 }

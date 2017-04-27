@@ -32,7 +32,7 @@ public class TextInput extends Contextual implements Controllable {
 
     public TextInput(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
-        textSize = (int)(h * 2 / 3);
+        textSize = (int) (h * 2 / 3);
         init();
     }
 
@@ -47,13 +47,11 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     private void init() {
-        setBackgroundStyle(BackgroundStyle.VOLATILE);
+        setBackgroundStyle(JStyle.VOLATILE);
+        setTextStyle(JStyle.VOLATILE);
         setContent(defaultContent);
         static_content = "";
-        submitMethod = new Runnable() {
-            @Override
-            public void run() {
-            }
+        submitMethod = () -> {
         };
         timer = getParent().millis();
         cursorColor = contourColor;
@@ -83,7 +81,6 @@ public class TextInput extends Contextual implements Controllable {
         if (isFocusedOn) {
             displayCursor();
         }
-        getParent().fill(getTextColor());
 
         super.displayText(temp);
 
@@ -190,9 +187,7 @@ public class TextInput extends Contextual implements Controllable {
                                 for (String s : storedInputs) {
                                     setContent(getContent() + s);
                                 }
-                            } catch (UnsupportedFlavorException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
+                            } catch (UnsupportedFlavorException | IOException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -265,6 +260,7 @@ public class TextInput extends Contextual implements Controllable {
         try {
             return Integer.valueOf(getStaticContent());
         } catch (NumberFormatException e) {
+            System.out.println("id = " + id);
             System.err.println("\"" + getStaticContent() + "\" can not be converted to a number.");
             return 0;
         }
@@ -274,6 +270,7 @@ public class TextInput extends Contextual implements Controllable {
         try {
             return Float.valueOf(getStaticContent());
         } catch (NumberFormatException e) {
+            System.out.println("id = " + id);
             System.err.println("\"" + getStaticContent() + "\" can not be converted to a number.");
             return 0;
         }
@@ -281,8 +278,8 @@ public class TextInput extends Contextual implements Controllable {
 
     @Override
     public void resize(float w, float h) {
-        super.resize(w,h);
-        textSize = (int)(h * 2 / 3);
+        super.resize(w, h);
+        textSize = (int) (h * 2 / 3);
     }
 
     @Override

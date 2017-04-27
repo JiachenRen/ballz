@@ -35,7 +35,8 @@ public class Button extends Contextual implements Controllable {
     public void init() {
         setContent(defaultContent);
         setAlign(CENTER);
-        setBackgroundStyle(BackgroundStyle.VOLATILE);
+        setTextStyle(JStyle.VOLATILE);
+        setBackgroundStyle(JStyle.VOLATILE);
         onClickMethod = mousePressedMethod = mouseHeldMethod = mouseOverMethod = mouseFloatMethod = () -> {
         };
         setTrimWidth(7);
@@ -51,7 +52,6 @@ public class Button extends Contextual implements Controllable {
         super.display();
 
         //render text
-        getParent().fill(getTextColor());
         super.displayText();
     }
 

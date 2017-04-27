@@ -100,7 +100,7 @@ public class JNode {
      * @param fileName the name of your_customization_file.txt to be imported into JNode.
      * @since April 26th idea by Jiachen Ren.
      */
-    private static void importStyle(String fileName) {
+    public static void importStyle(String fileName) {
         String[] lines = parent.loadStrings("jui_lib/customization/" + fileName);
         System.out.println("default imported; jui_lib 2.0.1\n");
         label:
@@ -144,6 +144,9 @@ public class JNode {
                         int color = parent.color(rgba[0], rgba[1], rgba[2], rgba[3]);
                         field.setInt(null, color);
                         PApplet.println(color);
+                        break;
+                    case "String":
+                        PApplet.println(field.getName());
                         break;
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {

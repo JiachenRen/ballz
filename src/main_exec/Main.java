@@ -148,6 +148,8 @@ public class Main extends PApplet {
 
         /*initialize JUI Main Frame*/
         JNode.init(this);
+        JNode.importStyle("random");
+
         mainFrame = new HBox("mainFrame", 0, 0, width, height);
         JNode.add(mainFrame);
 
@@ -560,6 +562,9 @@ public class Main extends PApplet {
         });
         colorSelector.link("Score", () -> {
             scoreColor = colorSelector.getColorRGBA("Score");
+        });
+        colorSelector.link("Bonus", () -> {
+            bonusColor = colorSelector.getColorRGBA("Bonus");
         });
         colorSelector.link("Background", () -> {
             context.setBackgroundColor(colorSelector.getColorRGBA("Background"));

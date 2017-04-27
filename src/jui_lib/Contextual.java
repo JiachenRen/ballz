@@ -1,6 +1,7 @@
 package jui_lib;
 
 import game_objs.Context;
+import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
@@ -14,6 +15,7 @@ public abstract class Contextual extends Displayable {
     private int textColor = JNode.TEXT_COLOR;
     private int mouseOverTextColor = JNode.MOUSE_OVER_TEXT_COLOR;
     private int mousePressedTextColor = JNode.MOUSE_PRESSED_TEXT_COLOR;
+    private JStyle textStyle = JStyle.CONSTANT;
     public int textSize;
     public float fontScalar = JNode.FONT_SCALAR;
     public PFont font = JNode.UNI_FONT;
@@ -124,12 +126,7 @@ public abstract class Contextual extends Displayable {
         getParent().pushMatrix();
         if (textSize > 0.0) getParent().textSize(textSize);
 
-        if (isMouseOver()) {
-            int color = getParent().mousePressed ? mousePressedTextColor : mouseOverTextColor;
-            getParent().fill(color);
-        } else {
-            getParent().fill(textColor);
-        }
+        applyTextColor();
 
         switch (alignment) {
             case PConstants.LEFT:
@@ -153,11 +150,36 @@ public abstract class Contextual extends Displayable {
         getParent().popMatrix();
     }
 
+    /**
+     * @since April 27th an absolutely ridiculous error has been fixed. It appears to
+     * me that the error happened inside of processing's PApplet. It keeps throwing a bug
+     * where the pushMatrix() call has been called more than 32 times... Nevertheless, the
+     * bug is actually caused by a null pointer exception as the JStyle instance's not yet
+     * being initialized.
+     */
+    public void applyTextColor(){
+        if (textStyle.equals(JStyle.CONSTANT)){
+            getParent().fill(textColor);
+        }else if (textStyle.equals(JStyle.VOLATILE)){
+            if (isMouseOver()) {
+                int color = getParent().mousePressed ? mousePressedTextColor : mouseOverTextColor;
+                getParent().fill(color);
+            } else {
+                getParent().fill(textColor);
+            }
+        }
+    }
+
     public void displayText(String s) {
         String temp = content;
         content = s;
         displayText();
         content = temp;
+    }
+
+    public Contextual setTextStyle(JStyle textStyle) {
+        this.textStyle = textStyle;
+        return this;
     }
 
     public void setFontScalar(float temp) {

@@ -6,6 +6,7 @@ import jui_lib.*;
 import jui_lib.bundles.ColorSelector;
 import jui_lib.bundles.ValueSelector;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 import processing.core.PVector;
 
@@ -201,6 +202,7 @@ public class Main extends PApplet {
         modify where indicated instead.
          */
         context = new Context();
+        context.setColorMode(3);
         Container contextContainer = new HBox("contextContainer")
                 .setMargins(0, 0)
                 .add(context);
@@ -696,16 +698,16 @@ public class Main extends PApplet {
         dimensionSelectorsWrapper.add(applyDimensionButton);
 
 
-        /*IMPORTANT calculation for latent properties*/
+        /*removed April 26th. Redundant. JUI default default sheet is applied.
         mainFrame.setContainerVisible(false);
         mainFrame.setContourVisible(false);
-        //mainFrame.setBackgroundColor(50, 255, 100, 180);
-        //mainFrame.setBackgroundStyle(Displayable.BackgroundStyle.VOLATILE);
+        mainFrame.setBackgroundColor(50, 255, 100, 180);
+        mainFrame.setBackgroundStyle(Displayable.BackgroundStyle.VOLATILE);
         mainFrame.setMouseOverBackgroundColor(50, 255, 100, 180);
-        mainFrame.setBackgroundColor(50, 50, 50, 50);
         mainFrame.setSpacing(3);
         mainFrame.setMargins(3, 3);
         mainFrame.applyStyleToNodes();
+        */
 
         dimensionSelectorsWrapper.setContainerVisible(true);
 

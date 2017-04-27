@@ -14,28 +14,35 @@ import processing.core.PImage;
  * TODO add mousePressedTextColor(), mousePressedContourColor(), mouseOverTextColor(), mouseOverContourColor();
  */
 public class Displayable {
-    public boolean displayContour = true;
+    public boolean displayContour = JNode.DISPLAY_CONTOUR;
     public boolean isVisible = true;
-    public int backgroundColor = JNode.getParent().color(255, 255, 255, 150);
-    public int mouseOverBackgroundColor = JNode.getParent().color(50, 255, 100, 180);
-    public int mousePressedBackgroundColor = JNode.getParent().color(50, 255, 50, 220);
-    public int contourColor = JNode.getParent().color(0);
-    public int mousePressedContourColor = JNode.getParent().color(0);
-    public int mouseOverContourColor = JNode.getParent().color(0);
-    public float contourThickness = 1;
-    public String id;
+
+    public int colorMode = JNode.COLOR_MODE;
+    public int backgroundColor = JNode.BACKGROUND_COLOR;
+    public int mouseOverBackgroundColor = JNode.MOUSE_OVER_BACKGROUND_COLOR;
+    public int mousePressedBackgroundColor = JNode.MOUSE_PRESSED_BACKGROUND_COLOR;
+    public int contourColor = JNode.CONTOUR_COLOR;
+    public int mousePressedContourColor = JNode.MOUSE_PRESSED_CONTOUR_COLOR;
+    public int mouseOverContourColor = JNode.MOUSE_OVER_CONTOUR_COLOR;
+
+    public float contourThickness = JNode.CONTOUR_THICKNESS;
+    public float rounding = JNode.ROUNDING;
+
     public float x, y, w, h;
-    public int rounding = JNode.UNI_ROUNDING;
     public float relativeW = 1, relativeH = 1;
+
     public BackgroundStyle backgroundStyle = BackgroundStyle.CONSTANT;
     public ImgStyle imgStyle = ImgStyle.RESERVED;
+
     public PImage backgroundImg;
     private Runnable attachedMethod;
-    private boolean refreshRequested;
-    // is the relative width/height going to be auto-assigned?
-    // is the dimension going to be relative?
 
-    public boolean isRelative, isDependent, isRounded;
+    private boolean refreshRequested;
+
+    public boolean isRounded = JNode.ROUNDED;
+    public boolean isRelative, isDependent;
+
+    public String id;
 
     public enum BackgroundStyle {
         CONSTANT(0), VOLATILE(1), DISABLED(2);
@@ -94,7 +101,7 @@ public class Displayable {
         return this;
     }
 
-    public Displayable setRounding(int temp) {
+    public Displayable setRounding(float temp) {
         rounding = temp;
         //setRounded(true); removed April 26th.
         return this;
@@ -276,6 +283,11 @@ public class Displayable {
 
     public Displayable setMousePressedBackgroundColor(int r, int g, int b) {
         mousePressedBackgroundColor = JNode.getParent().color(r, g, b);
+        return this;
+    }
+
+    public Displayable setColorMode(int colorMode) {
+        this.colorMode = colorMode;
         return this;
     }
 

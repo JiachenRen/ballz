@@ -1,5 +1,6 @@
 package jui_lib;
 
+import game_objs.Context;
 import jui_lib.bundles.ColorSelector;
 import processing.core.PConstants;
 
@@ -9,11 +10,12 @@ import java.util.Iterator;
 //code refactored Jan 20th
 //idea: Jan 21th, granting both the VBox and HBox the ability to actualize both relative width and height.
 //TODO April 23rd: add setCollapseInvisible() method
+//TODO April 26th add display title option.
 public abstract class Container extends Displayable {
     public ArrayList<Displayable> displayables;
-    public boolean containerVisible; // the container is visible only if the objects it contains are visible.
-    public float marginX = JNode.UNI_CONTAINER_MARGIN_X, marginY = JNode.UNI_CONTAINER_MARGIN_Y;
-    public float spacing = JNode.UNI_CONTAINER_SPACING; //modified Jan 26th.
+    public boolean containerVisible = JNode.CONTAINER_VISIBLE; // the container is visible only if the objects it contains are visible.
+    public float marginX = JNode.CONTAINER_MARGIN_X, marginY = JNode.CONTAINER_MARGIN_Y;
+    public float spacing = JNode.CONTAINER_SPACING; //modified Jan 26th. Refactored April 26th.
     public int alignH, alignV;
     public boolean collapseInvisible;
 
@@ -265,13 +267,19 @@ public abstract class Container extends Displayable {
             displayable.setBackgroundColor(backgroundColor);
             displayable.setMouseOverBackgroundColor(mouseOverBackgroundColor);
             displayable.setMousePressedBackgroundColor(mousePressedBackgroundColor);
+            displayable.setContourColor(backgroundColor);
+            displayable.setMouseOverContourColor(mouseOverBackgroundColor);
+            displayable.setMousePressedContourColor(mousePressedBackgroundColor);
             //TODO displayable.setBackgroundStyle(backgroundStyle);
             displayable.setContourVisible(displayContour);
-            displayable.setContourColor(contourColor);
             displayable.setContourThickness(contourThickness);
             displayable.setRounded(isRounded);
             displayable.setRounding(rounding);
-
+            /* TODO to be implemented
+            if (displayable instanceof Contextual){
+                displayable.setTex
+            }
+            */
             /*instanceof, learned April 22nd.*/
             if (displayable instanceof Container) {
                 Container container = (Container) displayable;

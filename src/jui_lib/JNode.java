@@ -2,8 +2,10 @@ package jui_lib;
 
 import com.sun.istack.internal.Nullable;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PFont;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -24,19 +26,34 @@ public class JNode {
     private static ArrayList<Displayable> standbyDisplayables; //added March 8th. Not stable yet.
 
     //create getter and setters for the following. Modified Jan 26.
-    static int UNI_ROUNDING = 3; //universal rounding factor
-    static int UNI_MENU_TEXT_SIZE = 15; //universal menu textSize
-    static int UNI_CONTAINER_MARGIN_X = 5;
-    static int UNI_CONTAINER_MARGIN_Y = 5;
-    static int UNI_CONTAINER_SPACING = 5;
-    static int UNI_TEXT_COLOR = 0X0000;
-    static float UNI_FONT_SCALAR = 1.5f;
+    static int UNI_MENU_TEXT_SIZE = 15; //universal menu textSize TODO remove
     public static PFont UNI_FONT;
-    static private int colorMode = PApplet.RGB;
     static private PApplet parent;
 
+    /*to be imported from default.txt*/
+    static boolean DISPLAY_CONTOUR;
+    static boolean CONTAINER_VISIBLE;
+    static boolean ROUNDED;
+    static float CONTAINER_MARGIN_X;
+    static float CONTAINER_MARGIN_Y;
+    static float CONTAINER_SPACING;
+    static float CONTOUR_THICKNESS;
+    static float ROUNDING;
+    static float FONT_SCALAR;
+
+    static int COLOR_MODE;
+    static int BACKGROUND_COLOR;
+    static int MOUSE_PRESSED_BACKGROUND_COLOR;
+    static int MOUSE_OVER_BACKGROUND_COLOR;
+    static int CONTOUR_COLOR;
+    static int MOUSE_PRESSED_CONTOUR_COLOR;
+    static int MOUSE_OVER_CONTOUR_COLOR;
+    static int TEXT_COLOR;
+    static int MOUSE_PRESSED_TEXT_COLOR;
+    static int MOUSE_OVER_TEXT_COLOR;
 
     public static void init(PApplet p) {
+        parent = p;
         textInputs = new ArrayList<>();
         scrollFields = new ArrayList<>();
         buttons = new ArrayList<>();
@@ -48,15 +65,15 @@ public class JNode {
         sliders = new ArrayList<>();
         standbyDisplayables = new ArrayList<>();
         setUniFont(p.createFont(PFont.list()[1], 100));
-        parent = p;
+        importStyle("default");
     }
 
     public static void run() {
         parent.pushStyle();
-        parent.colorMode(colorMode);
         try {
-            for (int i = 0; i < displayables.size(); i++) {
+            for (int i = displayables.size() - 1; i >= 0; i--) {
                 Displayable displayable = displayables.get(i);
+                parent.colorMode(displayable.colorMode); //TODO not yet functional
                 if (displayable.isVisible() && !displayable.isRelative())
                     displayable.run();
             }
@@ -69,6 +86,71 @@ public class JNode {
             e.printStackTrace();
         }
         parent.popStyle();
+    }
+
+    /**
+     * This method would soon become one of the best features of JUI, as
+     * it offers incredible customization capabilities; each individual style
+     * sheet does not need to contain all the customization info; instead,
+     * the user can only include the style that they are willing to change.
+     * For example, a file named button_style.txt can only contain a single
+     * line "mouse_pressed_background_color: 234,12,45,27", and it would be
+     * considered as valid.
+     *
+     * @param fileName the name of your_customization_file.txt to be imported into JNode.
+     * @since April 26th idea by Jiachen Ren.
+     */
+    private static void importStyle(String fileName) {
+        String[] lines = parent.loadStrings("jui_lib/customization/" + fileName);
+        System.out.println("default imported; jui_lib 2.0.1\n");
+        label:
+        for (String line : lines) {
+            if (!line.contains(": ")) continue;
+            String data = line.split(": ")[1];
+            String keyWord = line.split(": ")[0];
+            try {
+                Field field = JNode.class.getDeclaredField(keyWord.toUpperCase());
+                String fieldTypeName = field.getType().getName();
+                PApplet.print(field.getName().toLowerCase() + " = ");
+                switch (keyWord) {
+                    case "color_mode":
+                        switch (data) {
+                            case "RGB":
+                                field.setInt(null, PConstants.RGB);
+                                break;
+                            case "ARGB":
+                                field.setInt(null, PConstants.ARGB);
+                                break;
+                            case "HSB":
+                                field.setInt(null, PConstants.HSB);
+                                break;
+                        }
+                        continue label;
+                }
+                switch (fieldTypeName) {
+                    case "float":
+                        field.setFloat(null, Float.valueOf(data));
+                        PApplet.println(field.getFloat(null));
+                        break;
+                    case "boolean":
+                        field.setBoolean(null, Boolean.valueOf(data));
+                        PApplet.println(field.getBoolean(null));
+                        break;
+                    case "int":
+                        String temp[] = data.split(",");
+                        int[] rgba = new int[4];
+                        for (int i = 0; i < rgba.length; i++)
+                            rgba[i] = Integer.valueOf(temp[i]);
+                        int color = parent.color(rgba[0], rgba[1], rgba[2], rgba[3]);
+                        field.setInt(null, color);
+                        PApplet.println(color);
+                        break;
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                /*learned "|" April 26th. Wow.*/
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void standby(Displayable displayable) {
@@ -346,36 +428,8 @@ public class JNode {
         UNI_FONT = textFont;
     }
 
-    public static void setUniFontScalar(float f) {
-        UNI_FONT_SCALAR = f;
-    }
-
-    public static void setUniTextColor(int color) {
-        UNI_TEXT_COLOR = color;
-    }
-
-    public static void setUniContainerSpacing(int s) {
-        UNI_CONTAINER_SPACING = s;
-    }
-
-    public static void setUniContainerMarginX(int mx) {
-        UNI_CONTAINER_MARGIN_X = mx;
-    }
-
-    public static void setUniContainerMarginY(int my) {
-        UNI_CONTAINER_MARGIN_Y = my;
-    }
-
     public static void setUniMenuTextSize(int textSize) {
         UNI_MENU_TEXT_SIZE = textSize;
-    }
-
-    public static void setColorMode(int colorMode) {
-        JNode.colorMode = colorMode;
-    }
-
-    public void setUniRounding(int r) {
-        UNI_ROUNDING = r;
     }
 
     public static PApplet getParent() {

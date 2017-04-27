@@ -118,7 +118,7 @@ public class ValueSelector extends VBox {
      * only invoke this method immediately after declaration.
      * TODO not the best way to handle this issue. To be FIXED
      *
-     * @param style the new style
+     * @param style the new default
      */
     public ValueSelector setStyle(Style style) {
         this.style = style;

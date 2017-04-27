@@ -11,11 +11,11 @@ import static processing.core.PConstants.RIGHT;
 //add mouseOverTextColor & mousePressedTextColor
 public abstract class Contextual extends Displayable {
     private String content;
-    private int textColor = JNode.UNI_TEXT_COLOR;
-    private int mouseOverTextColor = JNode.UNI_TEXT_COLOR;
-    private int mousePressedTextColor = JNode.UNI_TEXT_COLOR;
+    private int textColor = JNode.TEXT_COLOR;
+    private int mouseOverTextColor = JNode.MOUSE_OVER_TEXT_COLOR;
+    private int mousePressedTextColor = JNode.MOUSE_PRESSED_TEXT_COLOR;
     public int textSize;
-    public float fontScalar = JNode.UNI_FONT_SCALAR; // scalar for the default font
+    public float fontScalar = JNode.FONT_SCALAR;
     public PFont font = JNode.UNI_FONT;
     public String defaultContent = "";
     public int alignment;

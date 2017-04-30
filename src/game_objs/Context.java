@@ -283,6 +283,9 @@ public class Context extends Displayable {
         /*update explosions in the background*/
         for (Explosion explosion : explosions)
             explosion.update();
+
+        updateBallsFiredUI();
+        updateBallsRecoveredUI();
     }
 
     public void display() {
@@ -385,6 +388,22 @@ public class Context extends Displayable {
     private void updateScoreUI() {
         Label label = JNode.getLabelById("score");
         if (label != null) label.setContent("" + Main.score);
+    }
+
+    /**
+     * updates the UI that displays the number of balls fired
+     */
+    private void updateBallsFiredUI() {
+        Label label = JNode.getLabelById("ballsFired");
+        if (label != null) label.setContent("Balls Fired: " + ballsFired);
+    }
+
+    /**
+     * updates the UI that displays the number of balls recovered
+     */
+    private void updateBallsRecoveredUI() {
+        Label label = JNode.getLabelById("ballsRecovered");
+        if (label != null) label.setContent("Balls Recovered: " + ballsRecovered);
     }
 
     @Override

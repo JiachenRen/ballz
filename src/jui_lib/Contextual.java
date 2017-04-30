@@ -1,11 +1,9 @@
 package jui_lib;
 
-import game_objs.Context;
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
-import static processing.core.PConstants.RIGHT;
+import static processing.core.PConstants.*;
 
 //code refactored Jan 18,the Displayable interface is changed into a superclass. Modified by Jiachen Ren
 //code refactored Jan 20,the superclass Displayable remained as the parent, the actual parent for all the text based objects are now changed to Contextual.
@@ -16,23 +14,33 @@ public abstract class Contextual extends Displayable {
     private int mouseOverTextColor = JNode.MOUSE_OVER_TEXT_COLOR;
     private int mousePressedTextColor = JNode.MOUSE_PRESSED_TEXT_COLOR;
     private JStyle textStyle = JStyle.CONSTANT;
-    public int textSize;
-    public float fontScalar = JNode.FONT_SCALAR;
+    private boolean applyTextDescent;
+    private float textSize;
+    private boolean autoTextDescentCompensation = JNode.AUTO_TEXT_DESCENT_COMPENSATION;
+    public float maxTextPercentage = JNode.CONTEXTUAL_INIT_TEXT_PERCENTAGE;
     public PFont font = JNode.UNI_FONT;
     public String defaultContent = "";
     public int alignment;
 
+    private static String[] applyTextDescentLetters;
+
+    static {
+        applyTextDescentLetters = new String[]{"g", "j", "p", "q", "y"};
+    }
+
     public Contextual(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
-        content = defaultContent;
+        init();
     }
 
     public Contextual(String id, float relativeW, float relativeH) {
         super(id, relativeW, relativeH);
+        init();
     }
 
     public Contextual(String id) {
         super(id);
+        init();
     }
 
     public Contextual setAlign(int alignment) {
@@ -40,11 +48,24 @@ public abstract class Contextual extends Displayable {
         return this;
     }
 
-    public float[] getTextDimension(String temp) {
-        if (textSize > 0.0) getParent().textSize(textSize); //initialize the text size
-            //if (font != null) getParent().textFont(font); //initalize the text font
-        else return new float[]{0.0f, 0.0f};
-        return new float[]{JNode.getParent().textWidth(temp), getParent().textAscent() - getParent().textDescent() * fontScalar};
+    private void init() {
+        content = defaultContent;
+        textSize = h * maxTextPercentage;
+    }
+
+    public float getTextWidth(String temp) {
+        if (textSize > 0.0) getParent().textSize(textSize);
+        return JNode.getParent().textWidth(temp);
+    }
+
+    /**
+     * @return the height of the text rounded to nearest pixel
+     * @since April 28th I finally got this figured out!
+     * y+h+textAscent()-(y+h+textDescent()) = ascent - descent
+     */
+    public float getTextHeight() {
+        if (textSize > 0.0) getParent().textSize(textSize);
+        return getParent().textAscent() - getParent().textDescent();
     }
 
     public Contextual setTextColor(int r, int g, int b) {
@@ -99,7 +120,7 @@ public abstract class Contextual extends Displayable {
 
     ;
 
-    public Contextual setTextSize(int temp) {
+    public Contextual setTextSize(float temp) {
         textSize = temp;
         return this;
     }
@@ -109,45 +130,67 @@ public abstract class Contextual extends Displayable {
         return this;
     }
 
-    public void display() {
-        super.display();
-    }
-
     public String getContent() {
         return content;
     }
 
     public Contextual setContent(String temp) {
         content = temp;
+        this.applyTextDescent = shouldApplyTextDescent(content);
+        calculateTextSize();
         return this;
+    }
+
+    public static boolean shouldApplyTextDescent(String temp) {
+        for (String s : applyTextDescentLetters)
+            if (temp.contains(s))
+                return true;
+        return false;
     }
 
     public void displayText() {
         getParent().pushMatrix();
         if (textSize > 0.0) getParent().textSize(textSize);
+        if (font != null) getParent().textFont(font);
 
         applyTextColor();
+        displayRawText();
+        getParent().popMatrix();
+    }
 
-        switch (alignment) {
-            case PConstants.LEFT:
-                getParent().textAlign(PConstants.LEFT);
-                getParent().text(content, x, y + h / 2 + getTextDimension(content)[1] / 2);
-                break;
-            case PConstants.CENTER:
-                getParent().textAlign(PConstants.CENTER);
-                getParent().text(content, x + w / 2, y + h / 2 + getTextDimension(content)[1] / 2);
-                break;
-            case PConstants.RIGHT:
-                getParent().textAlign(RIGHT);
-                getParent().text(content, x + w, y + h / 2 + getTextDimension(content)[1] / 2);
-                break;
-            default:
-                System.err.println(id + ": align-" + alignment + "cannot be applied to Label. Default alignment applied.");
-                getParent().textAlign(PConstants.LEFT);
-                getParent().text(content, x, y + h / 2 + getTextDimension(content)[1] / 2);
+    public void displayRawText() {
+        float halfTextHeight = getTextHeight() / 2;
+        float descent = getParent().textDescent();
+        float ty;
+        int align;
+
+        if (applyTextDescent && autoTextDescentCompensation) {
+            ty = y + h / 2 - descent;
+            align = CENTER;
+        } else {
+            ty = y + h / 2 + halfTextHeight;
+            align = DOWN;
         }
 
-        getParent().popMatrix();
+        switch (alignment) {
+            case LEFT:
+                getParent().textAlign(LEFT, align);
+                getParent().text(content, x, ty);
+                break;
+            case CENTER:
+                getParent().textAlign(CENTER, align);
+                getParent().text(content, x + w / 2, ty);
+                break;
+            case RIGHT:
+                getParent().textAlign(RIGHT, align);
+                getParent().text(content, x + w, ty);
+                break;
+            default:
+                System.err.println(id + ": align-" + alignment + " cannot be applied to Label. Default alignment applied.");
+                getParent().textAlign(LEFT, align);
+                getParent().text(content, x, ty);
+        }
+
     }
 
     /**
@@ -157,10 +200,10 @@ public abstract class Contextual extends Displayable {
      * bug is actually caused by a null pointer exception as the JStyle instance's not yet
      * being initialized.
      */
-    public void applyTextColor(){
-        if (textStyle.equals(JStyle.CONSTANT)){
+    public void applyTextColor() {
+        if (textStyle.equals(JStyle.CONSTANT)) {
             getParent().fill(textColor);
-        }else if (textStyle.equals(JStyle.VOLATILE)){
+        } else if (textStyle.equals(JStyle.VOLATILE)) {
             if (isMouseOver()) {
                 int color = getParent().mousePressed ? mousePressedTextColor : mouseOverTextColor;
                 getParent().fill(color);
@@ -172,9 +215,9 @@ public abstract class Contextual extends Displayable {
 
     public void displayText(String s) {
         String temp = content;
-        content = s;
+        setContent(s);
         displayText();
-        content = temp;
+        setContent(temp);
     }
 
     public Contextual setTextStyle(JStyle textStyle) {
@@ -182,7 +225,46 @@ public abstract class Contextual extends Displayable {
         return this;
     }
 
-    public void setFontScalar(float temp) {
-        fontScalar = temp;
+    public void calculateTextSize() {
+        if (h <= 0) return;
+        textSize = h * maxTextPercentage;
+        float[] dim = new float[]{getTextWidth(getContent()), getTextHeight()};
+        while (dim[0] > w || dim[1] > maxTextPercentage * h) {
+            if (textSize < 3) break;
+            textSize--;
+            dim = new float[]{getTextWidth(getContent()), getTextHeight()};
+        }
+    }
+
+    @Override
+    public void resize(float w, float h) {
+        super.resize(w, h);
+        calculateTextSize();
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public Contextual setAutoTextDescentCompensation(boolean temp) {
+        autoTextDescentCompensation = temp;
+        return this;
+    }
+
+    public boolean isApplyingTextDescent() {
+        return applyTextDescent;
+    }
+
+    /**
+     * sets the maximum percentage of the text relative to the height.
+     *
+     * @param temp the percentage that the height of the text is going to take;
+     *             it is calculated as textSize/h. Has to be a value that is less
+     *             than 1.0f.
+     * @return this contextual instance. Useful for chained mutation
+     */
+    public Contextual setMaxTextPercentage(float temp) {
+        this.maxTextPercentage = temp > 1.0f ? 1.0f : temp;
+        return this;
     }
 }

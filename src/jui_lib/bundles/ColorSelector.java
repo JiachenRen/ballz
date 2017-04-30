@@ -1,6 +1,5 @@
 package jui_lib.bundles;
 
-import jogamp.nativewindow.windows.RECT;
 import jui_lib.*;
 import jui_lib.Button;
 import jui_lib.Label;
@@ -8,8 +7,6 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
-import javax.naming.ldap.Control;
-import java.awt.*;
 import java.util.ArrayList;
 
 import static processing.core.PConstants.CENTER;

@@ -49,7 +49,7 @@ public class VSlider extends Slider implements Controllable {
         barHeight = h;
     }
 
-    public VSlider setBarScalingFactor(float temp) {
+    public VSlider setScalingFactor(float temp) {
         barScalingFactor = temp;
         syncSettings();
         return this;

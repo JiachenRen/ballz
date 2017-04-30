@@ -86,7 +86,7 @@ public class ValueSelector extends VBox {
         }
 
 
-        valueSlider.setBarScalingFactor(0.5f);
+        valueSlider.setScalingFactor(0.5f);
         valueSlider.setRollerShape(PConstants.RECT);
         valueSlider.setRange(0, 1);
         valueSlider.setValue(0.5f);

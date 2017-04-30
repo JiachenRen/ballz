@@ -48,7 +48,7 @@ public class HSlider extends Slider implements Controllable {
         roller.setX(this.x + temp / 2.0f + offset);
     }
 
-    public HSlider setBarScalingFactor(float temp) {
+    public HSlider setScalingFactor(float temp) {
         barScalingFactor = temp;
         syncSettings();
         return this;

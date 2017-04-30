@@ -204,9 +204,8 @@ public class MenuItem extends Label implements Controllable {
         return this;
     }
 
-    @Override
     public MenuItem setTextSize(int textSize) {
-        this.textSize = textSize;
+        super.setTextSize(textSize);
         if (menu != null) menu.setTextSize(textSize);
         return this;
     }

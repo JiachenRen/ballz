@@ -3,7 +3,9 @@ package jui_lib;
 import processing.core.PConstants;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,19 +22,26 @@ public class TextInput extends Contextual implements Controllable {
     private boolean isLockedOn;
     private boolean displayCursor;
     private boolean shiftDown;
-    private String static_content;
-    private String temp;
-    private String defaultContent = "text";
+    private String staticContent;
+    private String contentOnScreen;
+    private String defaultContent;
     private int timer;
     private int cursorColor;
     private float cursorThickness;
-    public int timesSubmitted;
+    private int timesSubmitted;
     private Runnable submitMethod;
+    private static String sketchRenderer;
     private boolean commandDown;
+    private boolean controlDown;
+    private boolean cursorIsMobile;
+    private Cursor cursor;
+
+    static {
+        sketchRenderer = JNode.getParent().sketchRenderer();
+    }
 
     public TextInput(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
-        textSize = (int) (h * 2 / 3);
         init();
     }
 
@@ -49,14 +58,15 @@ public class TextInput extends Contextual implements Controllable {
     private void init() {
         setBackgroundStyle(JStyle.VOLATILE);
         setTextStyle(JStyle.VOLATILE);
+        setDefaultContent("text");
         setContent(defaultContent);
-        static_content = "";
-        submitMethod = () -> {
-        };
+        staticContent = "";
         timer = getParent().millis();
         cursorColor = contourColor;
         cursorThickness = contourThickness;
         alignment = PConstants.LEFT;
+        cursor = new Cursor();
+        cursorIsMobile = true;
     }
 
     public boolean isFocusedOn() {
@@ -64,27 +74,39 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     public void display() {
-        //drawing the background
         if (font != null) getParent().textFont(font);
         super.display();
-        //if focused, draw the cursor
+
         getParent().pushMatrix();
-        getParent().textSize(textSize);
-        temp = getContent();
+        updateContentOnScreen();
+
+        if (isFocusedOn) {
+            if (displayCursor)
+                if (cursorIsMobile)
+                    cursor.display();
+                else
+                    displayCursor();
+        }
+
+        super.displayText(contentOnScreen);
+
+        getParent().popMatrix();
+
+        if (getParent().millis() - timer >= 500) {
+            timer = getParent().millis();
+            displayCursor = !displayCursor;
+        }
+    }
+
+    private void updateContentOnScreen() {
+        contentOnScreen = getContent();
         for (int i = 0; i < getContent().length(); i++) {
-            temp = getContent().substring(getContent().length() - i - 1, getContent().length());
-            if (JNode.getParent().textWidth(temp) > w) {
-                temp = getContent().substring(getContent().length() - i, getContent().length());
+            contentOnScreen = getContent().substring(getContent().length() - i - 1, getContent().length());
+            if (getTextWidth(contentOnScreen) > w) {
+                contentOnScreen = getContent().substring(getContent().length() - i, getContent().length());
                 break;
             }
         }
-        if (isFocusedOn) {
-            displayCursor();
-        }
-
-        super.displayText(temp);
-
-        getParent().popMatrix();
     }
 
     public TextInput onSubmit(Runnable temp_method) {
@@ -112,104 +134,175 @@ public class TextInput extends Contextual implements Controllable {
         return this;
     }
 
-    private void displayCursor() {
-
+    public void displayCursor() {
         getParent().stroke(cursorColor);
         getParent().strokeWeight(cursorThickness);
-        if (textSize > 0.0) getParent().textSize(textSize);
-
-        if (displayCursor) {
-            if (temp.equals("")) {
-                switch (alignment) {
-                    case PConstants.LEFT:
-                        getParent().line(x + 2, y, x + 2, y + h);
-                        break;
-                    case PConstants.CENTER:
-                        getParent().line(x + w / 2, y, x + w / 2, y + h);
-                        break;
-                    case PConstants.RIGHT:
-                        getParent().line(x + w - 2, y, x + w - 2, y + h);
-                        break;
-                }
-            } else {
-                switch (alignment) {
-                    case PConstants.LEFT:
-                        getParent().line(x + JNode.getParent().textWidth(temp), y, x + JNode.getParent().textWidth(temp), y + h);
-                        break;
-                    case PConstants.CENTER:
-                        getParent().line(x + w / 2 + JNode.getParent().textWidth(temp) / 2, y, x + w / 2 + JNode.getParent().textWidth(temp) / 2, y + h);
-                        break;
-                    case PConstants.RIGHT:
-                        getParent().line(x + w - 2, y, x + w - 2, y + h);
-                        break;
-                }
+        float y2 = y + h - 1;
+        float xv1 = x + w / 2;
+        float xv2 = x + w - 2;
+        float xv3 = x + 2;
+        float tw = getTextWidth(contentOnScreen);
+        if (contentOnScreen.equals("")) {
+            switch (alignment) {
+                case PConstants.LEFT:
+                    getParent().line(xv3, y, xv3, y2);
+                    break;
+                case PConstants.CENTER:
+                    getParent().line(xv1, y, xv1, y2);
+                    break;
+                case PConstants.RIGHT:
+                    getParent().line(xv2, y, xv2, y2);
+                    break;
             }
-        }
-        if (getParent().millis() - timer >= 500) {
-            timer = getParent().millis();
-            displayCursor = !displayCursor;
+        } else {
+            switch (alignment) {
+                case PConstants.LEFT:
+                    getParent().line(x + tw, y, x + tw, y2);
+                    break;
+                case PConstants.CENTER:
+                    getParent().line(xv1 + tw / 2, y, tw / 2, y2);
+                    break;
+                case PConstants.RIGHT:
+                    getParent().line(xv2, y, xv2, y2);
+                    break;
+            }
         }
     }
 
+    /**
+     * keyPressed event listener. The key is used to acclimate the content of this
+     * instance of the text field.
+     *
+     * @since April 28th java FX2D renderer issue has been taken into consideration.
+     * now the clipboard for macOs works fine with all of processing's renderer.
+     */
     public void keyPressed() {
-        if (this.isFocusedOn) {
-            switch (getParent().keyCode) {
-                case 8:
-                    if (getContent().length() > 0)
-                        setContent(getContent().substring(0, getContent().length() - 1));
-                    break;
-                case 10:
-                    static_content = getContent();
-                    timesSubmitted++;
+        if (!this.isFocusedOn || handleModifierKeys(false)) return;
+        switch (getParent().keyCode) {
+            case 8:
+                if (getContent().length() > 0)
+                    setContent(getContent().substring(0, getContent().length() - 1));
+                break;
+            case 10:
+                staticContent = getContent();
+                timesSubmitted++;
+                if (submitMethod != null)
                     submitMethod.run();
-                    break;
-                case 16:
-                    shiftDown = true;
-                    break;
-                case 157:
-                    commandDown = true;
-                    break;
-                default:
-                    if (shiftDown) {
-                        //if (key <= 'z' && key >= 'a')
-                        setContent(getContent() + Character.toUpperCase(getParent().key));
-                    } else if (commandDown) {
-                        if (getParent().key == 'v') {
-                            /*modified March 8th.*/
-                            try {
-                                ArrayList<String> storedInputs = new ArrayList<>();
-                                String data = (String) Toolkit.getDefaultToolkit()
-                                        .getSystemClipboard().getData(DataFlavor.stringFlavor);
-                                Scanner scanner = new Scanner(data);
-                                while (scanner.hasNext()) {
-                                    storedInputs.add(scanner.nextLine());
-                                }
-                                for (String s : storedInputs) {
-                                    setContent(getContent() + s);
-                                }
-                            } catch (UnsupportedFlavorException | IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } else {
-                        setContent(getContent() + Character.toLowerCase(getParent().key));
-                        //changed for better compatibility with FX2D. Jan 26th.
+                break;
+            default:
+                char c = Character.toLowerCase(getParent().key);
+                String processed = Character.toString(c);
+                if (shiftDown) {
+                    /*if (key <= 'z' && key >= 'a')*/
+                    setContent(getContent() + processed.toUpperCase());
+                } else if (commandDown) {
+                    handleCommandDownActions(c);
+                } else if (controlDown) {
+                    if (!JNode.OS.contains("mac"))
+                        handleCommandDownActions(c);
+                } else {
+                    setContent(getContent() + processed);
+                }
+                break;
+        }
 
-                    }
-                    break;
+    }
+
+    /**
+     * @param keyReleased whether or not it is receiving from keyReleased().
+     *                    otherwise, this method is invoked for keyPressed().
+     * @return whether or not this specific call for keyPressed() or keyReleased() is executed;
+     * if so, return true.
+     * @since April 28th
+     */
+    private boolean handleModifierKeys(boolean keyReleased) {
+        if (sketchRenderer.contains("FX2D")) {
+            switch (this.getParent().keyCode) {
+                case 16:
+                    shiftDown = !keyReleased;
+                    return true;
+                case 768:
+                    commandDown = !keyReleased;
+                    return true;
+                case 17:
+                    controlDown = !keyReleased;
+                    return true;
+            }
+        } else {
+            switch (this.getParent().keyCode) {
+                case 16:
+                    shiftDown = !keyReleased;
+                    return true;
+                case 157:
+                    commandDown = !keyReleased;
+                    return true;
+                case 17:
+                    controlDown = !keyReleased;
+                    return true;
             }
         }
+        return false;
+    }
+
+    /**
+     * @param _key the key pressed by the user
+     * @since April 28th
+     * this method handles common clipboard actions such as copy and paste.
+     * TODO add select all
+     */
+    private void handleCommandDownActions(char _key) {
+        switch (_key) {
+            case 'v':
+                acclimateContentFromClipboard();
+                break;
+            case 'c':
+                setClipboard(getContent());
+                break;
+        }
+    }
+
+    /**
+     * this method sets the content of the system clipboard to the content that it takes in.
+     *
+     * @param content the content in which the system clipboard is going to be set to.
+     * @since April 28th
+     */
+    public static void setClipboard(String content) {
+        StringSelection selection = new StringSelection(content);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+    }
+
+    /**
+     * @return the String extracted from the system clipboard.
+     * @since April 28th
+     */
+    public static String getStringFromClipboard() {
+        String incrementer = "";
+        try {
+            ArrayList<String> storedInputs = new ArrayList<>();
+            String data = (String) Toolkit.getDefaultToolkit()
+                    .getSystemClipboard().getData(DataFlavor.stringFlavor);
+            Scanner scanner = new Scanner(data);
+            while (scanner.hasNext()) {
+                storedInputs.add(scanner.nextLine());
+            }
+            for (String s : storedInputs) {
+                incrementer += s;
+            }
+        } catch (UnsupportedFlavorException | IOException e) {
+            e.printStackTrace();
+        }
+        return incrementer;
+    }
+
+    private void acclimateContentFromClipboard() {
+        /*modified March 8th.*/
+        setContent(getContent() + getStringFromClipboard());
     }
 
     public void keyReleased() {
-        switch (getParent().keyCode) {
-            case 16:
-                shiftDown = false;
-                break;
-            case 157:
-                commandDown = false;
-                break;
-        }
+        handleModifierKeys(true);
     }
 
     public void mousePressed() {
@@ -237,7 +330,7 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     public TextInput setStaticContent(String temp) {
-        static_content = temp;
+        staticContent = temp;
         setContent(temp);
         return this;
     }
@@ -249,7 +342,7 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     public String getStaticContent() {
-        return static_content;
+        return staticContent;
     }
 
     public String getDefaultContent() {
@@ -276,10 +369,8 @@ public class TextInput extends Contextual implements Controllable {
         }
     }
 
-    @Override
-    public void resize(float w, float h) {
-        super.resize(w, h);
-        textSize = (int) (h * 2 / 3);
+    public int getTimesSubmitted() {
+        return timesSubmitted;
     }
 
     @Override
@@ -288,8 +379,50 @@ public class TextInput extends Contextual implements Controllable {
         return this;
     }
 
+    /**
+     * @param align the alignment for the text
+     * @return the current instance of TextInput. This would be useful for chained access.
+     * @since April 28th. Alignment left is recommended since the cursor
+     * would only be mobile in this scenario.
+     */
     @Override
-    public TextInput setTextSize(int temp) {
+    public TextInput setAlign(int align) {
+        switch (align) {
+            case PConstants.LEFT:
+                cursorIsMobile = true;
+                break;
+            case PConstants.RIGHT:
+                cursorIsMobile = false;
+            case PConstants.CENTER:
+                cursorIsMobile = false;
+        }
+        super.setAlign(align);
         return this;
+    }
+
+    private class Cursor {
+
+        Cursor() {
+
+        }
+
+        private void display() {
+            getParent().strokeWeight(cursorThickness);
+            getParent().stroke(cursorColor);
+
+            if (contentOnScreen.length() == 0) {
+                displayCursor();
+                return;
+            }
+            float y2 = y + h - 1;
+            float tw = getTextWidth(contentOnScreen);
+            getParent().line(x + tw, y, x + tw, y2);
+        }
+    }
+
+    @Override
+    public void calculateTextSize() {
+        if (h <= 0) return;
+        setTextSize(h * maxTextPercentage);
     }
 }

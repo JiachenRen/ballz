@@ -253,7 +253,7 @@ public class Table extends Container /*implements Controllable*/ {
     }
 
     @Deprecated
-    public float availableSpace() {
+    public float undeclaredSpace() {
         return 0;
     }
 

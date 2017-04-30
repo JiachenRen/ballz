@@ -4,11 +4,10 @@ import game_objs.Ball;
 import game_objs.Context;
 import jui_lib.*;
 import jui_lib.bundles.ColorSelector;
+import jui_lib.bundles.ProgressIndicator;
 import jui_lib.bundles.ValueSelector;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PImage;
-import processing.core.PVector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +21,7 @@ public class Main extends PApplet {
     private static HBox mainFrame;
     private static VBox settingsPanel;
     private static VBox advancedPanel;
+    private static ProgressIndicator progressIndicator;
 
     /**
      * game specific attributes
@@ -40,6 +40,7 @@ public class Main extends PApplet {
     public static int columns = 7;
     public static int columnGap = 5;
     public static int rowGap = columnGap / (int) 2.0f;
+    private static int fakeDelayMillis = 100;
 
     /**
      * colors
@@ -72,14 +73,24 @@ public class Main extends PApplet {
      */
     private static boolean imgLoaded = false;
     private static boolean settingsImported = false;
+    private static boolean applyFakeDelay = true;
+    private static boolean initialized = false;
 
     public static BufferedReader bufferedReader;
+
+    public static String initMessages[] = new String[]{
+            "Initializing JUI Control Node... please wait...",
+            "Loading Images...",
+            "Importing default theme...",
+            "Initializing UI Main Frame...",
+            "Importing PApplet.core...",
+            "Instantiating Game Specific Objects...",
+    };
 
     public static void main(String args[]) {
         System.out.println("Ballz Mac/PC Version. Created by Jiachen Ren on April 20th");
         String sketch = Thread.currentThread().getStackTrace()[1].getClassName();
-        Thread proc = new Thread(() -> PApplet.main(sketch));
-        proc.start();
+        PApplet.main(sketch);
     }
 
     public void settings() {
@@ -88,7 +99,7 @@ public class Main extends PApplet {
         //size(1000, 850, P3D);
 
         /*optimized for mac retina display. Set this to 1 if you are using windows*/
-        pixelDensity(1);
+        //pixelDensity(2);
     }
 
     private void loadImages() {
@@ -103,7 +114,7 @@ public class Main extends PApplet {
     private void importSettings() {
         if (settingsImported) return;
         ArrayList<String> lines = new ArrayList<>();
-        bufferedReader = createReader("src/data/records.txt");
+        bufferedReader = createReader("data/records.txt");
         while (true) {
             try {
                 String line = bufferedReader.readLine();
@@ -131,25 +142,84 @@ public class Main extends PApplet {
      */
     public static void record(String keyWord, Number val) {
         PApplet parent = JNode.getParent();
-        String lines[] = parent.loadStrings("src/data/records.txt");
+        String lines[] = parent.loadStrings("data/records.txt");
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].contains(keyWord)) {
                 lines[i] = keyWord + ":" + val.toString();
             }
         }
-        parent.saveStrings("src/data/records.txt", lines);
+        parent.saveStrings("data/records.txt", lines);
     }
 
     public void setup() {
         Ball.initPosRecorded = false;
+        /*Capture the instance and initiate JUI Main Control Node (Only has to be done once)*/
+        JNode.init(this);
+
+        createUIComponents();
+    }
+
+    public void draw() {
+        if (progressIndicator.getProgressBar().hasCompleted() || initialized) {
+            frameRate(fps);
+            background(Main.displayColor);
+            JNode.run();
+            initialized = true;
+        } else {
+            background(255, 255, 255);
+            updateProgressBar(initMessages[(int) (Math.random() * initMessages.length)]);
+        }
+    }
+
+    public void mousePressed() {
+        JNode.mousePressed();  //linking to node
+    }
+
+    public void mouseReleased() {
+        JNode.mouseReleased();
+        context.mouseReleased();
+    }
+
+    public void mouseDragged() {
+        JNode.mouseDragged();
+    }
+
+    public void keyPressed() {
+        /*TODO this is for testing, delete*/
+        switch (key) {
+            case 'x':
+                context.addBlockRow();
+                break;
+        }
+        JNode.keyPressed();
+    }
+
+    public void keyReleased() {
+        JNode.keyReleased();
+    }
+
+    public void mouseWheel() {
+        //to be implemented. Jan 27th.
+    }
+
+    /**
+     * this is just for fun; April 29th
+     */
+    private void updateProgressBar(String description) {
+        progressIndicator.incrementPercentage((float) Math.random() * 0.04f);
+        progressIndicator.setDescription(description);
+        progressIndicator.display();
+    }
+
+    public void createUIComponents() {
+        /*initialization of the progressbar*/
+        float piw = 200, pih = 50;
 
         importSettings();
         loadImages();
 
         /*initialize JUI Main Frame*/
-        JNode.init(this);
-        JNode.importStyle("random");
-
+        JNode.importStyle("default");
         mainFrame = new HBox("mainFrame", 0, 0, width, height);
         JNode.add(mainFrame);
 
@@ -181,6 +251,7 @@ public class Main extends PApplet {
         /*label that indicates the current level*/
         Contextual level = new Label("level")
                 .setContent("Level")
+                .setMaxTextPercentage(1.0f)
                 .setAlign(CENTER);
         topBar.add(level);
 
@@ -236,9 +307,10 @@ public class Main extends PApplet {
         ballsRecovered.setContent("Balls Recovered: ");
         bottomBar.add(ballsRecovered);
 
+        mainFrame.add(new Displayable("spaceHolder").setVisible(false));
         /*the section below is for the settings band advanced panels*/
         /*settings panel that contains game specific settings*/
-        settingsPanel = new VBox("settingsPanel");
+        settingsPanel = new VBox("settingsPanel", 0.15f, 1.0f);
         settingsPanel.setAlignV(DOWN);
         mainFrame.add(settingsPanel);
 
@@ -281,7 +353,7 @@ public class Main extends PApplet {
 
         HSlider accSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
         accSlider.setRollerShape(RECT);
-        accSlider.setBarScalingFactor(0.5f);
+        accSlider.setScalingFactor(0.5f);
         accSlider.setRange(1.005f, 1.018f);
         accSlider.setValue(acc);
         accSlider.onFocus(() -> {
@@ -313,7 +385,7 @@ public class Main extends PApplet {
         fpsLabelWrapper.add(fpsTextInput);
 
         fpsSlider.setRollerShape(RECT);
-        fpsSlider.setBarScalingFactor(0.5f);
+        fpsSlider.setScalingFactor(0.5f);
         fpsSlider.setRange(60, 400);
         fpsSlider.setValue(fps);
         fpsSlider.onFocus(() -> {
@@ -346,7 +418,7 @@ public class Main extends PApplet {
         speedLabelWrapper.add(speedTextInput);
 
         speedSlider.setRollerShape(RECT);
-        speedSlider.setBarScalingFactor(0.5f);
+        speedSlider.setScalingFactor(0.5f);
         speedSlider.setRange(1, 17);
         speedSlider.setValue(ballInitVelocity);
         speedSlider.onFocus(() -> {
@@ -382,7 +454,7 @@ public class Main extends PApplet {
         diameterLabelWrapper.add(diameterTextInput);
 
         diameterSlider.setRollerShape(RECT);
-        diameterSlider.setBarScalingFactor(0.5f);
+        diameterSlider.setScalingFactor(0.5f);
         diameterSlider.setRange(8, 30);
         diameterSlider.setValue(ballDiameter);
         diameterSlider.onFocus(() -> {
@@ -451,6 +523,18 @@ public class Main extends PApplet {
         });
         settingsItemsWrapper.add(displayUiContourButton);
 
+        Button uiCollapseInvisibleButton = new Button("uiCollapseInvisibleButton", 1.0f, 0.025f).setContent("Collapse Invisible");
+        uiCollapseInvisibleButton.onClick(() -> {
+            boolean temp = uiCollapseInvisibleButton.getContent().equals("Collapse Invisible");
+            uiCollapseInvisibleButton.setContent(temp ? "Retain Invisible" : "Collapse Invisible");
+            for (Displayable displayable : JNode.getDisplayables()) {
+                if (displayable instanceof Container) {
+                    ((Container) displayable).setCollapseInvisible(temp);
+                }
+            }
+        });
+        settingsItemsWrapper.add(uiCollapseInvisibleButton);
+
         Button uiContainerVisibleButton = new Button("uiContainerVisibleButton", 1.0f, 0.025f).setContent("Show Container");
         uiContainerVisibleButton.onClick(() -> {
             boolean temp = uiContainerVisibleButton.getContent().equals("Show Container");
@@ -517,8 +601,8 @@ public class Main extends PApplet {
         /*JUI slider that controls the width of the game*/
         HSlider widthPercentageSlider = new HSlider("widthPercentageSlider", 1.0f, 0.03f);
         widthPercentageSlider.setRollerShape(RECT);
-        widthPercentageSlider.setBarScalingFactor(0.5f);
-        widthPercentageSlider.setRange(.3f, .8f);
+        widthPercentageSlider.setScalingFactor(0.5f);
+        widthPercentageSlider.setRange(.3f, .7f);
         widthPercentageSlider.setValue(gamePanelPercentage);
         widthPercentageSlider.onFocus(() -> {
             gamePanelPercentage = widthPercentageSlider.getFloatValue();
@@ -534,7 +618,7 @@ public class Main extends PApplet {
 
 
         /*advanced settings panel that provides more detailed controls*/
-        advancedPanel = new VBox("advancedPanel");
+        advancedPanel = new VBox("advancedPanel", 0.15f, 1.0f);
         //advancedPanel.setContainerVisible(true);
         mainFrame.add(advancedPanel);
 
@@ -694,7 +778,7 @@ public class Main extends PApplet {
         Button applyDimensionButton = new Button("applyDimensionButton", 1.0f, 0.1f);
         applyDimensionButton.setContent("Apply");
         applyDimensionButton.onClick(() -> {
-            rowGap = rowGapSelector.getIntValue() / 2;
+            rowGap = rowGapSelector.getIntValue();
             columnGap = columnGapSelector.getIntValue();
             columns = columnsSelector.getIntValue();
             rows = rowsSelector.getIntValue();
@@ -714,52 +798,12 @@ public class Main extends PApplet {
         mainFrame.applyStyleToNodes();
         */
 
-        dimensionSelectorsWrapper.setContainerVisible(true);
-
-
         context.setBackgroundColor(colorSelector.getColorRGBA("Background"));
 
-
-        //TODO add container visible UI
-
-        /*TODO adjust the frame rate!*/
-        frameRate(fps);
-    }
-
-    public void draw() {
-        background(Main.displayColor);
-        JNode.run();
-    }
-
-    public void mousePressed() {
-        JNode.mousePressed();  //linking to node
-    }
-
-    public void mouseReleased() {
-        JNode.mouseReleased();
-        context.mouseReleased();
-    }
-
-    public void mouseDragged() {
-        JNode.mouseDragged();
-    }
-
-    public void keyPressed() {
-        /*TODO this is for testing, delete*/
-        switch (key) {
-            case 'x':
-                context.addBlockRow();
-                break;
-        }
-        JNode.keyPressed();
-    }
-
-    public void keyReleased() {
-        JNode.keyReleased();
-    }
-
-    public void mouseWheel() {
-        //to be implemented. Jan 27th.
+        progressIndicator = new ProgressIndicator("progressIndicator", width / 2 - piw / 2, height / 2 - pih / 2, piw, pih);
+        progressIndicator.setApplyFakeDelay(applyFakeDelay);
+        progressIndicator.setFakeDelayMillis(fakeDelayMillis);
+        progressIndicator.setTitle("Initializing...");
     }
 }
 

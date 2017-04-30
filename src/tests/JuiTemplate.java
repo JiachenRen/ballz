@@ -1,7 +1,5 @@
 package tests;
 
-import com.sun.istack.internal.Nullable;
-import com.sun.xml.internal.bind.v2.model.annotation.RuntimeAnnotationReader;
 import jui_lib.*;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -70,7 +68,7 @@ public class JuiTemplate extends PApplet {
         s1 = new HSlider("slider");
         s1.setRange(-10000, 10000);
         s1.setRollerShape(RECT);
-        s1.setBarScalingFactor(.4f);
+        s1.setScalingFactor(.4f);
         s1.onFocus(() -> {
             Slider ts = JNode.getSliderById("slider");
             Contextual tl = JNode.getContextualById("label");
@@ -178,7 +176,7 @@ public class JuiTemplate extends PApplet {
         s2.setGridInterval(41);
         s2.setRollerShape(RECT);
         s2.setGridVisible(true);
-        s2.setBarScalingFactor(.5f);
+        s2.setScalingFactor(.5f);
         s2.onFocusMethod = () -> {
             brightness = JNode.getSliderById("slider_brightness").getIntValue();
             if (updatingOnDrag)
@@ -218,21 +216,21 @@ public class JuiTemplate extends PApplet {
         vs1 = new VSlider("vs1",.05f,1.0f);
         vs1.setRange(-10000, 10000);
         vs1.setRollerShape(RECT);
-        vs1.setBarScalingFactor(.4f);
+        vs1.setScalingFactor(.4f);
         b10.add(vs1);
 
         VSlider vs2;
         vs2 = new VSlider("vs2",.05f,1.0f);
         vs2.setRange(-10000, 10000);
         vs2.setRollerShape(RECT);
-        vs2.setBarScalingFactor(.4f);
+        vs2.setScalingFactor(.4f);
         b10.add(vs2);
 
         VSlider vs3;
         vs3 = new VSlider("vs3",.05f,1.0f);
         vs3.setRange(-10000, 10000);
         vs3.setRollerShape(RECT);
-        vs3.setBarScalingFactor(.4f);
+        vs3.setScalingFactor(.4f);
         b10.add(vs3);
 
 

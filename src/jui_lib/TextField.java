@@ -44,8 +44,8 @@ public class TextField extends Contextual {
     }
 
     private void init() {
-        setTextSize(15); //setting the default text size to 15
-        textHeight = this.getTextDimension("a")[1];
+        //setTextSize(15); //setting the default text size to 15
+        //textHeight = this.getTextDimension("a")[1];
         setAlign(PConstants.LEFT);
         setSpacing(5);
         updateTextAreaDim();
@@ -63,7 +63,7 @@ public class TextField extends Contextual {
         textArea.beginDraw();
         textArea.background(this.backgroundColor);
         textArea.fill(getTextColor());
-        if (textSize > 0.0) textArea.textSize(textSize);
+        //if (textSize > 0.0) textArea.textSize(textSize);
         textArea.textAlign(alignment);
         //textArea.background(0,0,0); testing completed. Jan 30th. 9:59 PM.
         textArea.text("Hello, My name is Jiachen. I built JUI", textArea.width / 2, textArea.height / 2);
@@ -107,11 +107,6 @@ public class TextField extends Contextual {
         return this;
     }
 
-    public TextField setTextSize(int temp) {
-        this.textSize = temp;
-        textHeight = this.getTextDimension("a")[1];
-        return this;
-    }
 
     public TextField setSpacing(int temp) {
         this.spacing = temp;

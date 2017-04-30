@@ -12,7 +12,7 @@ code refactored Jan 29th. VSlider Class created.
 Idea Jan 29th: add slider progress bar.
 code refactored Feb 4th. Added progress bar modified for both VSlider and VSlider.
 */
-public abstract class Slider extends Displayable implements Controllable {
+public abstract class Slider extends Displayable implements Controllable,Scalable {
     public float barScalingFactor = 1;
     public boolean snapToGrid, displayGrid, displayNumericScale;
     public boolean isLockedOn;
@@ -140,7 +140,7 @@ public abstract class Slider extends Displayable implements Controllable {
 
     public abstract void drawGrid();
 
-    public abstract Slider setBarScalingFactor(float num);
+    public abstract Slider setScalingFactor(float num);
 
     public void display() {
         //for both the slider bar and the roller
@@ -219,7 +219,7 @@ public abstract class Slider extends Displayable implements Controllable {
     public void init() {
         roller = new Roller(x, y);
         barWidth = w;
-        setBarScalingFactor(barScalingFactor);
+        setScalingFactor(barScalingFactor);
         setRounded(true);
         rollerBackgroundColor = backgroundColor;
         setProgressBackgroundColor(mouseOverBackgroundColor);

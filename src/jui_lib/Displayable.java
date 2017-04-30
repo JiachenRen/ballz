@@ -11,7 +11,8 @@ import processing.core.PImage;
 //refresh requesting technique applied April 23rd
 
 /**
- * TODO add mousePressedTextColor(), mousePressedContourColor(), mouseOverTextColor(), mouseOverContourColor();
+ * add mousePressedTextColor(), mousePressedContourColor(), mouseOverTextColor(), mouseOverContourColor();
+ * completed April 30th.
  */
 public class Displayable {
     public boolean displayContour = JNode.DISPLAY_CONTOUR;
@@ -41,7 +42,7 @@ public class Displayable {
     private boolean refreshRequested;
 
     public boolean isRounded = JNode.ROUNDED;
-    public boolean isRelative, isDependent;
+    public boolean isRelative, isUndeclared;
 
     public String id;
 
@@ -60,7 +61,7 @@ public class Displayable {
     public Displayable(String id) {
         this.id = id;
         this.isRelative = true;
-        this.isDependent = true;
+        this.isUndeclared = true;
     }
 
     public Displayable(String id, float x, float y, float w, float h) {
@@ -75,12 +76,12 @@ public class Displayable {
         return JNode.getParent().mouseX >= x && (JNode.getParent().mouseX <= x + w && (JNode.getParent().mouseY >= y && (JNode.getParent().mouseY <= y + h)));
     }
 
-    public boolean isDependent() {
-        return isDependent;
+    public boolean isUndeclared() {
+        return isUndeclared;
     }
 
-    public Displayable setDependent(boolean temp) {
-        isDependent = temp;
+    public Displayable setUndeclared(boolean temp) {
+        isUndeclared = temp;
         return this;
     }
 
@@ -115,14 +116,14 @@ public class Displayable {
 
     public Displayable setRelativeW(float temp) {
         relativeW = temp;
-        isDependent = false;
+        isUndeclared = false;
         refreshRequested = true;/*this might take long. Consider optimization.*/
         return this;
     }
 
     public Displayable setRelativeH(float temp) {
         relativeH = temp;
-        isDependent = false;
+        isUndeclared = false;
         refreshRequested = true;
         return this;
     }
@@ -131,7 +132,7 @@ public class Displayable {
         return isVisible;
     }
 
-    public boolean isDisplayingCoutour() {
+    public boolean isDisplayingContour() {
         return displayContour;
     }
 
@@ -296,11 +297,7 @@ public class Displayable {
         }
     }
 
-    public void display() {
-        /*default displaying method. Overriding recommended*/
-        getParent().pushStyle();
-        getParent().rectMode(PConstants.CORNER);
-
+    public void applyContourStyle() {
         getParent().strokeWeight(contourThickness);
         switch (contourStyle) {
             case VOLATILE:
@@ -317,7 +314,9 @@ public class Displayable {
                 else getParent().noStroke();
                 break;
         }
+    }
 
+    public void applyBackgroundStyle() {
         switch (backgroundStyle) {
             case CONSTANT:
                 getParent().fill(backgroundColor);
@@ -332,13 +331,18 @@ public class Displayable {
             case DISABLED:
                 break;
         }
+    }
 
+    public void drawRect() {
+        getParent().rectMode(PConstants.CORNER);
         if (isRounded) {
             getParent().rect(x, y, w, h, rounding);
         } else {
             getParent().rect(x, y, w, h);
         }
+    }
 
+    public void displayImg() {
         if (backgroundImg != null) {
             getParent().imageMode(PConstants.CENTER);
             float tx = x + w / 2, ty = y + h / 2;
@@ -362,6 +366,18 @@ public class Displayable {
                     break;
             }
         }
+    }
+
+    public void display() {
+        /*default displaying method. Overriding recommended*/
+        getParent().pushStyle();
+
+        applyContourStyle();
+        applyBackgroundStyle();
+        drawRect();
+
+        displayImg();
+
         getParent().popStyle();
     }
 

@@ -28,18 +28,20 @@ public class JNode {
     //create getter and setters for the following. Modified Jan 26.
     static int UNI_MENU_TEXT_SIZE = 15; //universal menu textSize TODO remove
     public static PFont UNI_FONT;
+    public static String OS = System.getProperty("os.name").toLowerCase();
     static private PApplet parent;
 
     /*to be imported from default.txt*/
     static boolean DISPLAY_CONTOUR;
     static boolean CONTAINER_VISIBLE;
     static boolean ROUNDED;
+    static boolean AUTO_TEXT_DESCENT_COMPENSATION;
     static float CONTAINER_MARGIN_X;
     static float CONTAINER_MARGIN_Y;
     static float CONTAINER_SPACING;
     static float CONTOUR_THICKNESS;
     static float ROUNDING;
-    static float FONT_SCALAR;
+    static float CONTEXTUAL_INIT_TEXT_PERCENTAGE;
 
     static int COLOR_MODE;
     static int BACKGROUND_COLOR;
@@ -82,7 +84,7 @@ public class JNode {
                     displayable.getAttachedMethod().run();
                 }
             }
-        } catch (java.lang.RuntimeException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
         parent.popStyle();
@@ -425,6 +427,14 @@ public class JNode {
         for (Contextual contextual : contextuals)
             if (Objects.equals(contextual.getId(), id)) return contextual;
         return null;
+    }
+
+    public static ArrayList<Displayable> getById(String id) {
+        ArrayList<Displayable> selected = new ArrayList<>();
+        for (Displayable displayable : displayables)
+            if (displayable.getId().equals(id))
+                selected.add(displayable);
+        return selected;
     }
 
     public static void setUniFont(PFont textFont) {

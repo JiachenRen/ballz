@@ -199,7 +199,7 @@ public class MenuDropdown extends Contextual implements Controllable {
 
         setVisible(false);
         alignment = PConstants.LEFT;
-        textSize = JNode.UNI_MENU_TEXT_SIZE;
+        setTextSize(JNode.UNI_MENU_TEXT_SIZE);
         //modified Jan 35th
     }
 
@@ -227,14 +227,14 @@ public class MenuDropdown extends Contextual implements Controllable {
             menuItem.setAlign(this.alignment);
             menuItem.setVisible(this.isVisible);
             menuItem.setTextFont(this.font);
-            menuItem.setTextSize(this.textSize);
+            menuItem.setTextSize(getTextSize());
             menuItem.setRounded(this.isRounded);
         }
-        itemHeight = (int) (getTextDimension("a")[1] * 1.5);
+        itemHeight = (int) getTextHeight();
         float itemWidth = 0;
         for (MenuItem menuItem : menuItems) {
-            if (getTextDimension(menuItem.getContent())[0] > itemWidth)
-                itemWidth = getTextDimension(menuItem.getContent())[0];
+            if (getTextWidth(menuItem.getContent()) > itemWidth)
+                itemWidth = getTextWidth(menuItem.getContent());
         }
         this.w = itemWidth;
         for (MenuItem menuItem : menuItems) {
@@ -248,8 +248,8 @@ public class MenuDropdown extends Contextual implements Controllable {
     }
 
     @Override
-    public MenuDropdown setTextSize(int temp) {
-        this.textSize = temp;
+    public MenuDropdown setTextSize(float temp) {
+        super.setTextSize(temp);
         arrange();
         return this;
     }

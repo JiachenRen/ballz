@@ -41,9 +41,9 @@ public class ScrollField extends Contextual {
     }
 
     private void init() {
-        textSize = 15; //setting the default text size to 15
+        setTextSize(15); //setting the default text size to 15
         buffered_lines = new ArrayList<String>();
-        textHeight = this.getTextDimension("a")[1];
+        textHeight = this.getTextHeight();
         alignment = PConstants.LEFT;
         buffer = "";
         spacing = 5;
@@ -55,7 +55,7 @@ public class ScrollField extends Contextual {
         super.display(); /*code cleaned up April 22nd*/
 
         getParent().fill(getTextColor());
-        if (textSize > 0.0) getParent().textSize(textSize);
+        if (getTextSize() > 0.0) getParent().textSize(getTextSize());
         getParent().textAlign(alignment);
 
         //determine the lines to be displayed.
@@ -105,12 +105,6 @@ public class ScrollField extends Contextual {
         displayRuledLines = temp;
         return this;
         //to be implemented
-    }
-
-    public ScrollField setTextSize(int temp) {
-        this.textSize = temp;
-        textHeight = this.getTextDimension("a")[1];
-        return this;
     }
 
     public ScrollField setRuledLinesColor(int r, int g, int b) {
@@ -194,7 +188,7 @@ public class ScrollField extends Contextual {
 
     private void processBuffer() {
         if (w <= 0 || h <= 0) return; //fixed Jan 25th.
-        int maxLength = (int) (maxCapacity * w / getTextDimension("-")[0]) + 10;
+        int maxLength = (int) (maxCapacity * w / getTextWidth("-")) + 10;
         try {
             buffer = buffer.length() < maxLength ? buffer : buffer.substring(buffer.length() - maxLength, buffer.length());
         } catch (RuntimeException e) {
@@ -223,7 +217,7 @@ public class ScrollField extends Contextual {
                 buf = "";
                 continue;
             }
-            if (this.getTextDimension(buf + c + c)[0] < w) {
+            if (this.getTextWidth(buf + c + c) < w) {
                 buf += c;
             } else {
                 lines.add(buf + c);
@@ -236,7 +230,8 @@ public class ScrollField extends Contextual {
 
     @Override
     public void resize(float w, float h) {
-        super.resize(w, h);
+        this.w = w;
+        this.h = h;
         maxCapacity = (int) (h / (textHeight + spacing));
         processBuffer();
     }

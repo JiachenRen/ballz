@@ -1,7 +1,5 @@
 package jui_lib;
 
-import game_objs.Context;
-import jui_lib.bundles.ColorSelector;
 import processing.core.PConstants;
 
 import java.util.ArrayList;
@@ -106,6 +104,12 @@ public abstract class Container extends Displayable {
         return this;
     }
 
+    /**
+     * TODO this method should takes in account for space holders.
+     *
+     * @param temp the boolean in which collapseInvisible corresponds to.
+     * @return this instance of Container.
+     */
     public Container setCollapseInvisible(boolean temp) {
         collapseInvisible = temp;
         syncSize();
@@ -125,14 +129,14 @@ public abstract class Container extends Displayable {
         return containerVisible;
     }
 
-    public abstract float availableSpace();
+    public abstract float undeclaredSpace();
 
     public Container add(Displayable displayable) {
         displayable.setRelative(true);
         if (!JNode.getDisplayables().contains(displayable))
             JNode.add(displayable);
         this.displayables.add(displayable);
-        //intended to synchronize the size addthe sub-class objects according to their
+        //intended to synchronize the size add the sub-class objects according to their
         syncSize();
         //intended to arrange the coordinates of the sub-class objects accordingly with their width.
         arrange();
@@ -331,9 +335,34 @@ public abstract class Container extends Displayable {
     public int visibleDisplayables() {
         int c = 0;
         for (Displayable displayable : displayables)
-            if (displayable.isVisible())
+            if (displayable.isVisible() || displayable instanceof SpaceHolder)
                 c++;
         return c;
+    }
+
+    public boolean shouldCollapse(Displayable displayable) {
+        return collapseInvisible && !displayable.isVisible() && !(displayable instanceof SpaceHolder);
+    }
+
+    /**
+     * prints the id of each displayable contained accordingly with the
+     * relative width and height assignment to each.
+     *
+     * @return the sum of relative width and relative height
+     */
+    public float[] printDisplayables() {
+        float relativeVal[] = new float[]{0, 0};
+        for (Displayable displayable : displayables) {
+            if (!displayable.isRelative() || displayable.isUndeclared())
+                continue;
+            String id = displayable.getId();
+            String relativeW = "relative width: " + Float.toString(displayable.getRelativeW()) + ";";
+            String relativeH = "relative height: " + Float.toString(displayable.getRelativeH()) + ";";
+            System.out.println("id = \"" + id + "\";" + relativeW + relativeH);
+            relativeVal[0] += displayable.getRelativeW();
+            relativeVal[1] += displayable.getRelativeH();
+        }
+        return relativeVal;
     }
 }
 

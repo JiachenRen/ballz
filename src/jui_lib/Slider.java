@@ -12,7 +12,7 @@ code refactored Jan 29th. VSlider Class created.
 Idea Jan 29th: add slider progress bar.
 code refactored Feb 4th. Added progress bar modified for both VSlider and VSlider.
 */
-public abstract class Slider extends Displayable implements Controllable,Scalable {
+public abstract class Slider extends Displayable implements MouseControl,Scalable {
     public float barScalingFactor = 1;
     public boolean snapToGrid, displayGrid, displayNumericScale;
     public boolean isLockedOn;
@@ -62,14 +62,17 @@ public abstract class Slider extends Displayable implements Controllable,Scalabl
         return false;
     }
 
+    /*TODO should I keep this here?*/
     public abstract void mouseDragged();
 
     public void mousePressed() {
+        super.mousePressed();
         if (roller.isMouseOver())
             isLockedOn = true;
     }
 
     public void mouseReleased() {
+        super.mouseReleased();
         isLockedOn = false;
     }
 
@@ -83,14 +86,6 @@ public abstract class Slider extends Displayable implements Controllable,Scalabl
             System.err.println("Error: range out of bound. High must be larger than low. Not recommended");
         }
         return this;
-    }
-
-    public void keyPressed() {
-        //deprecated
-    }
-
-    public void keyReleased() {
-        //deprecated
     }
 
     public Slider setRollerShape(int shape) {

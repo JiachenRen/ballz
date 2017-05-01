@@ -2,7 +2,7 @@ package jui_lib;
 
 import processing.core.PConstants;
 
-public class HSlider extends Slider implements Controllable {
+public class HSlider extends Slider implements MouseControl {
 
     public HSlider(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
@@ -31,8 +31,7 @@ public class HSlider extends Slider implements Controllable {
         roller.setEllipse(barHeight * getRollerScalingRadius());
         roller.setRect(barHeight * getRollerScalingWidth(), barHeight * getRollerScalingHeight());
         gridDotSize = (int) (barHeight / 3);
-        barWidth = w;//doesn't work, needs to be redone
-        //PApplet.println(w);
+        barWidth = w;
     }
 
     //TODO, to be implemented

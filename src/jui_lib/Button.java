@@ -7,7 +7,7 @@ import processing.core.PConstants;
 import static processing.core.PConstants.CENTER;
 
 //code refactored Jan 30th.
-public class Button extends Contextual implements Controllable {
+public class Button extends Contextual implements MouseControl {
     private boolean mousePressedOnButton;
     private boolean mouseOverTriggered;
 
@@ -95,6 +95,7 @@ public class Button extends Contextual implements Controllable {
 
     //action receivers
     public void mousePressed() {
+        super.mousePressed();
         if (isMouseOver() && isVisible()) {
             mousePressedOnButton = true;
             if (mousePressedMethod != null)
@@ -103,21 +104,19 @@ public class Button extends Contextual implements Controllable {
     }
 
     public void mouseReleased() {
+        super.mouseReleased();
         if (isMouseOver() && mousePressedOnButton && isVisible())
             if (onClickMethod != null)
                 onClickMethod.run();
         mousePressedOnButton = false;
     }
 
-    //deprecated action receivers for the action listener methods.
-    public void keyPressed() {
+    public void keyPressed(){
+        super.keyPressed();
     }
 
-    public void keyReleased() {
-    }
-
-    public void mouseDragged() {
-
+    public void keyReleased(){
+        super.keyReleased();
     }
 
     public Button setDefaultContent(String temp) {

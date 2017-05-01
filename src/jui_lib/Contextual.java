@@ -8,7 +8,7 @@ import static processing.core.PConstants.*;
 //code refactored Jan 18,the Displayable interface is changed into a superclass. Modified by Jiachen Ren
 //code refactored Jan 20,the superclass Displayable remained as the parent, the actual parent for all the text based objects are now changed to Contextual.
 //add mouseOverTextColor & mousePressedTextColor
-public abstract class Contextual extends Displayable {
+public abstract class Contextual extends Displayable implements KeyControl {
     private String content;
     private int textColor = JNode.TEXT_COLOR;
     private int mouseOverTextColor = JNode.MOUSE_OVER_TEXT_COLOR;
@@ -266,5 +266,46 @@ public abstract class Contextual extends Displayable {
     public Contextual setMaxTextPercentage(float temp) {
         this.maxTextPercentage = temp > 1.0f ? 1.0f : temp;
         return this;
+    }
+
+
+    /**
+     * key pressed call back listener. only executes once
+     *
+     * @since April 30th
+     */
+    public void keyPressed() {
+        for (EventListener eventListener : getEventListeners()) {
+            if (eventListener.getEvent().equals(Event.KEY_PRESSED))
+                eventListener.invoke();
+        }
+    }
+
+    /**
+     * key released call back listener. only executes once
+     *
+     * @since April 30th
+     */
+    public void keyReleased() {
+        for (EventListener eventListener : getEventListeners()) {
+            if (eventListener.getEvent().equals(Event.KEY_RELEASED))
+                eventListener.invoke();
+        }
+    }
+
+    /**
+     * key held call back listener. executes continuously
+     *
+     * @since April 30th
+     */
+    @Override
+    public void run() {
+        super.run();
+        if (getParent().keyPressed) {
+            getEventListeners().forEach(eventListener -> {
+                if (eventListener.getEvent().equals(Event.KEY_HELD))
+                    eventListener.invoke();
+            });
+        }
     }
 }

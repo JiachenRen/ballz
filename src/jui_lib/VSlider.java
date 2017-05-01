@@ -2,7 +2,7 @@ package jui_lib;
 
 import processing.core.PConstants;
 
-public class VSlider extends Slider implements Controllable {
+public class VSlider extends Slider implements MouseControl {
 
     public VSlider(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);

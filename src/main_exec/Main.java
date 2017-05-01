@@ -52,6 +52,7 @@ public class Main extends PApplet {
     public static int displayColor;
     public static int uiTextColor;
     public static int uiColor;
+    public static int uiMseOverColor;
     public static int blockColor1 = 150, blockColor2 = 100, blockColor3 = 255;
     /**
      * the values that are to be retrieved from the records.txt
@@ -200,6 +201,7 @@ public class Main extends PApplet {
 
     public void mouseWheel() {
         //to be implemented. Jan 27th.
+        JNode.mouseWheel();
     }
 
     /**
@@ -631,7 +633,7 @@ public class Main extends PApplet {
 
         /*Color Selector for various objects in the game*/
         ColorSelector colorSelector = new ColorSelector("colorSelector", 1.0f, .3f);
-        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background", "UI Text", "UI App");
+        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background", "UI Text", "UI App", "Mse Over");
         colorSelector.setColorRGBA("Balls", 255, 255, 255, 255);
         colorSelector.setColorRGBA("Debris", 255, 200, 10, 200);
         colorSelector.setColorRGBA("Background", 0, 0, 0, 255);
@@ -672,6 +674,7 @@ public class Main extends PApplet {
                 uiTextColor = temp;
             }
         });
+
         colorSelector.link("UI App", () -> {
             int temp = colorSelector.getColorRGBA("UI App");
             if (uiColor != temp) {
@@ -681,6 +684,20 @@ public class Main extends PApplet {
                 uiColor = temp;
             }
         });
+
+        colorSelector.link("Mse Over", () -> {
+            int temp = colorSelector.getColorRGBA("Mse Over");
+            if (uiMseOverColor != temp) {
+                for (Displayable displayable : JNode.getDisplayables()) {
+                    displayable.setMouseOverBackgroundColor(temp);
+                    if (displayable instanceof Slider) {
+                        ((Slider) displayable).setProgressBackgroundColor(temp);
+                    }
+                }
+                uiMseOverColor = temp;
+            }
+        });
+
         ballColor = colorSelector.getColorRGBA("Balls");
         debrisColor = colorSelector.getColorRGBA("Debris");
         bonusColor = colorSelector.getColorRGBA("Bonus");
@@ -804,6 +821,18 @@ public class Main extends PApplet {
         progressIndicator.setApplyFakeDelay(applyFakeDelay);
         progressIndicator.setFakeDelayMillis(fakeDelayMillis);
         progressIndicator.setTitle("Initializing...");
+
+        /*
+        try this! Amazing!
+        for (Displayable displayable: JNode.getDisplayables()){
+            displayable.addEventListener(Event.MOUSE_ENTERED,()->{
+                displayable.setBackgroundColor(0,0,0,10);
+            });
+            displayable.addEventListener(Event.MOUSE_LEFT,()->{
+                displayable.setBackgroundColor(JNode.BACKGROUND_COLOR);
+            });
+        }
+        */
     }
 }
 

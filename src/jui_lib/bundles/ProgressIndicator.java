@@ -20,17 +20,14 @@ public class ProgressIndicator extends VBox {
 
     public ProgressIndicator(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
-        init();
     }
 
     public ProgressIndicator(String id, float relativeW, float relativeH) {
         super(id, relativeW, relativeH);
-        init();
     }
 
     public ProgressIndicator(String id) {
         super(id);
-        init();
     }
 
     public void init() {

@@ -34,17 +34,14 @@ public class ColorSelector extends VBox {
 
     public ColorSelector(String id, float relativeW, float relativeH) {
         super(id, relativeW, relativeH);
-        init();
     }
 
     public ColorSelector(String id) {
         super(id);
-        init();
     }
 
     public ColorSelector(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
-        init();
     }
 
     /**

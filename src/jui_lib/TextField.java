@@ -93,7 +93,11 @@ public class TextField extends Contextual {
 
     }
 
-    //loads text from a file.
+    /**
+     * TODO to be completed
+     * @param path the path of the file to be loaded
+     * @return this instance of text field
+     */
     public TextField load(String path) {
         try {
             new String(Files.readAllBytes(Paths.get(path)));

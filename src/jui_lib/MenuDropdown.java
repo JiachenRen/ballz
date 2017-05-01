@@ -4,7 +4,7 @@ import processing.core.PConstants;
 
 import java.util.ArrayList;
 
-public class MenuDropdown extends Contextual implements Controllable {
+public class MenuDropdown extends Contextual implements MouseControl {
     //add set dropdown contour & rounded
     private ArrayList<MenuItem> menuItems;
     public int itemHeight;

@@ -4,6 +4,8 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
+import java.util.ArrayList;
+
 //code refactored Jan 18,the Displayable interface is changed into a superclass. Modified by Jiachen Ren
 //add setBackground. Task completed. Background enum added April 22nd.
 //modified April 22nd. Took me half an hour, I eliminated all rounding errors for containers!
@@ -14,7 +16,7 @@ import processing.core.PImage;
  * add mousePressedTextColor(), mousePressedContourColor(), mouseOverTextColor(), mouseOverContourColor();
  * completed April 30th.
  */
-public class Displayable {
+public class Displayable implements MouseControl {
     public boolean displayContour = JNode.DISPLAY_CONTOUR;
     public boolean isVisible = true;
 
@@ -46,7 +48,14 @@ public class Displayable {
 
     public String id;
 
-    //TODO
+    private ArrayList<EventListener> eventListeners;
+
+    private boolean mouseIsInScope;
+
+    {
+        eventListeners = new ArrayList<>();
+    }
+
     public enum ImgStyle {
         RESERVED, STRETCH
     }
@@ -295,6 +304,60 @@ public class Displayable {
         if (attachedMethod != null) {
             attachedMethod.run();
         }
+        updateEventListeners();
+    }
+
+    private void updateEventListeners() {
+        if (eventListeners.size() == 0) return;
+        if (isMouseOver()) {
+            eventListeners.forEach(eventListener -> {
+                if (eventListener.getEvent().equals(Event.MOUSE_OVER))
+                    eventListener.invoke();
+            });
+            if (!mouseIsInScope) {
+                mouseIsInScope = true;
+                eventListeners.forEach((eventListener) -> {
+                    if (eventListener.getEvent().equals(Event.MOUSE_ENTERED))
+                        eventListener.invoke();
+                });
+            }
+        } else {
+            if (mouseIsInScope) {
+                mouseIsInScope = false;
+                eventListeners.forEach((eventListener) -> {
+                    if (eventListener.getEvent().equals(Event.MOUSE_LEFT))
+                        eventListener.invoke();
+                });
+            }
+        }
+    }
+
+    public void mousePressed() {
+        eventListeners.forEach(eventListener -> {
+            if (eventListener.getEvent().equals(Event.MOUSE_PRESSED))
+                eventListener.invoke();
+        });
+    }
+
+    public void mouseDragged() {
+
+    }
+
+    public void mouseReleased() {
+        eventListeners.forEach(eventListener -> {
+            if (eventListener.getEvent().equals(Event.MOUSE_RELEASED))
+                eventListener.invoke();
+        });
+    }
+
+    /**
+     * TODO not working yet. Debug April 30th.
+     */
+    public void mouseWheel() {
+        eventListeners.forEach(eventListener -> {
+            if (eventListener.getEvent().equals(Event.MOUSE_WHEEL))
+                eventListener.invoke();
+        });
     }
 
     public void applyContourStyle() {
@@ -439,6 +502,54 @@ public class Displayable {
 
     public Displayable setBackgroundImg(PImage backgroundImg) {
         this.backgroundImg = backgroundImg;
+        return this;
+    }
+
+    public ArrayList<EventListener> getEventListeners() {
+        return eventListeners;
+    }
+
+    public ArrayList<EventListener> getEventListeners(Event event) {
+        ArrayList<EventListener> matched = new ArrayList<>();
+        eventListeners.forEach(eventListener -> {
+            if (eventListener.getEvent().equals(event))
+                matched.add(eventListener);
+        });
+        return matched;
+    }
+
+    public Displayable addEventListener(String id, Event event, Runnable attachedMethod) {
+        EventListener eventListener = new EventListener(id, event);
+        eventListener.attachMethod(attachedMethod);
+        this.eventListeners.add(eventListener);
+        return this;
+    }
+
+    public EventListener getEventListener(String id) {
+        for (EventListener eventListener : eventListeners)
+            if (eventListener.getId().equals(id))
+                return eventListener;
+        return null;
+    }
+
+    public Displayable removeEventListener(String id) {
+        for (int i = eventListeners.size() - 1; i >= 0; i--) {
+            if (eventListeners.get(i).getId().equals(id))
+                eventListeners.remove(i);
+        }
+        return this;
+    }
+
+    public Displayable removeEventListeners(Event event) {
+        for (int i = eventListeners.size() - 1; i >= 0; i--) {
+            if (eventListeners.get(i).getEvent().equals(event))
+                eventListeners.remove(i);
+        }
+        return this;
+    }
+
+    public Displayable addEventListener(Event event, Runnable attachedMethod) {
+        addEventListener("", event, attachedMethod);
         return this;
     }
 }

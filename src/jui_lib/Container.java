@@ -3,7 +3,9 @@ package jui_lib;
 import processing.core.PConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 //code refactored Jan 20th
 //idea: Jan 21th, granting both the VBox and HBox the ability to actualize both relative width and height.
@@ -363,6 +365,20 @@ public abstract class Container extends Displayable {
             relativeVal[1] += displayable.getRelativeH();
         }
         return relativeVal;
+    }
+
+    public Container addAll(ArrayList displayables) {
+        for (Object obj : displayables) {
+            if (!(obj instanceof Displayable))
+                throw new IllegalArgumentException("argument is not an instance of Displayable");
+            this.displayables.add((Displayable) obj);
+        }
+        return this;
+    }
+
+    public Container addAll(Displayable... displayables) {
+        Arrays.stream(displayables).forEach((displayable) -> this.displayables.add(displayable));
+        return this;
     }
 }
 

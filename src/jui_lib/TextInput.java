@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 //code refactored Jan 27th, class name changed to TextInput
 //refactored Feb 4th. Debugged the issue where the textSize won't refresh, which is caused by the abstracting of the displayText() method.
-public class TextInput extends Contextual implements Controllable {
+public class TextInput extends Contextual implements MouseControl,KeyControl {
     //add setAlign and shift down. Done. Jan 21.
     //add onFocus method. Idea Jan 26th.
     //considering allowing the user to change textSize with a ratio that factors into the total height. No. discouraged. Jan 26th.
@@ -177,6 +177,7 @@ public class TextInput extends Contextual implements Controllable {
      * now the clipboard for macOs works fine with all of processing's renderer.
      */
     public void keyPressed() {
+        super.keyPressed();
         if (!this.isFocusedOn || handleModifierKeys(false)) return;
         switch (getParent().keyCode) {
             case 8:
@@ -302,10 +303,12 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     public void keyReleased() {
+        super.keyReleased();
         handleModifierKeys(true);
     }
 
     public void mousePressed() {
+        super.mousePressed();
         if (isMouseOver()) this.isLockedOn = true;
         else {
             this.isLockedOn = false;
@@ -314,6 +317,7 @@ public class TextInput extends Contextual implements Controllable {
     }
 
     public void mouseReleased() {
+        super.mouseReleased();
         if (isMouseOver() && isLockedOn) {
             if (this.getContent().equals(defaultContent))
                 this.setContent("");
@@ -323,10 +327,6 @@ public class TextInput extends Contextual implements Controllable {
             this.isFocusedOn = false;
             if (this.getContent().equals("")) this.setContent(defaultContent);
         }
-    }
-
-    public void mouseDragged() {
-        //deprecated
     }
 
     public TextInput setStaticContent(String temp) {
@@ -400,6 +400,9 @@ public class TextInput extends Contextual implements Controllable {
         return this;
     }
 
+    /**
+     * TODO to be completed
+     */
     private class Cursor {
 
         Cursor() {

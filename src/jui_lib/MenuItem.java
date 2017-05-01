@@ -3,7 +3,7 @@ package jui_lib;
 import processing.core.PConstants;
 import processing.core.PFont;
 
-public class MenuItem extends Label implements Controllable {
+public class MenuItem extends Label implements MouseControl {
     private Runnable onClickMethod;
     private boolean mousePressedOnButton;
     private MenuDropdown menu;

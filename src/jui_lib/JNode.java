@@ -44,7 +44,7 @@ public class JNode {
     static float CONTEXTUAL_INIT_TEXT_PERCENTAGE;
 
     static int COLOR_MODE;
-    static int BACKGROUND_COLOR;
+    public static int BACKGROUND_COLOR;
     static int MOUSE_PRESSED_BACKGROUND_COLOR;
     static int MOUSE_OVER_BACKGROUND_COLOR;
     static int CONTOUR_COLOR;
@@ -303,47 +303,34 @@ public class JNode {
 
     //keyboard/mouseinput action receivers. Bug fixed Jan 28th 11:26PM.
     public static void mousePressed() {
-        Iterator<Displayable> iterator = displayables.iterator();
-        while (iterator.hasNext()) {
-            Displayable displayable = iterator.next();
+        for (Displayable displayable : displayables) {
             if (!(displayable instanceof MenuDropdown))
                 if (!displayable.isVisible()) continue;
-            if (displayable.getClass().getInterfaces().length != 0) {
-                if (displayable instanceof Controllable) {
-                    Controllable c = (Controllable) displayable;
-                    c.mousePressed();
-                }
-            }
+            displayable.mousePressed();
         }
     }
 
     public static void mouseReleased() {
-        Iterator<Displayable> iterator = displayables.iterator();
-        while (iterator.hasNext()) {
-            Displayable displayable = iterator.next();
+        for (Displayable displayable : displayables) {
             if (!(displayable instanceof MenuDropdown))
                 if (!displayable.isVisible()) continue;
-            if (displayable.getClass().getInterfaces().length != 0) {
-                if (displayable instanceof Controllable) {
-                    Controllable c = (Controllable) displayable;
-                    c.mouseReleased();
-                }
-            }
+            displayable.mouseReleased();
         }
     }
 
     public static void mouseDragged() {
-        Iterator<Displayable> iterator = displayables.iterator();
-        while (iterator.hasNext()) {
-            Displayable displayable = iterator.next();
+        for (Displayable displayable : displayables) {
             if (!(displayable instanceof MenuDropdown))
                 if (!displayable.isVisible()) continue;
-            if (displayable.getClass().getInterfaces().length != 0) {
-                if (displayable instanceof Controllable) {
-                    Controllable c = (Controllable) displayable;
-                    c.mouseDragged();
-                }
-            }
+            displayable.mouseDragged();
+        }
+    }
+
+    public static void mouseWheel() {
+        for (Displayable displayable : displayables) {
+            if (!(displayable instanceof MenuDropdown))
+                if (!displayable.isVisible()) continue;
+            displayable.mouseWheel();
         }
     }
 
@@ -352,8 +339,8 @@ public class JNode {
             if (!(displayable instanceof MenuDropdown))
                 if (!displayable.isVisible()) continue;
             if (displayable.getClass().getInterfaces().length != 0) {
-                if (displayable instanceof Controllable) {
-                    Controllable c = (Controllable) displayable;
+                if (displayable instanceof KeyControl) {
+                    KeyControl c = (KeyControl) displayable;
                     c.keyPressed();
                 }
             }
@@ -361,14 +348,12 @@ public class JNode {
     }
 
     public static void keyReleased() {
-        Iterator<Displayable> iterator = displayables.iterator();
-        while (iterator.hasNext()) {
-            Displayable displayable = iterator.next();
+        for (Displayable displayable : displayables) {
             if (!(displayable instanceof MenuDropdown))
                 if (!displayable.isVisible()) continue;
             if (displayable.getClass().getInterfaces().length != 0) {
-                if (displayable instanceof Controllable) {
-                    Controllable c = (Controllable) displayable;
+                if (displayable instanceof KeyControl) {
+                    KeyControl c = (KeyControl) displayable;
                     c.keyReleased();
                 }
             }

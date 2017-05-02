@@ -54,6 +54,11 @@ public class JNode {
     static int MOUSE_PRESSED_TEXT_COLOR;
     static int MOUSE_OVER_TEXT_COLOR;
 
+    private static int recordedMousePos[];
+    private static boolean mouseIsPressed;
+    private static boolean initMousePosRecorded;
+    private static boolean keyIsPressed;
+
     public static void init(PApplet p) {
         parent = p;
         textInputs = new ArrayList<>();
@@ -71,6 +76,7 @@ public class JNode {
     }
 
     public static void run() {
+        JNode.transferInputEvents();
         parent.pushStyle();
         try {
             for (int i = displayables.size() - 1; i >= 0; i--) {
@@ -88,6 +94,41 @@ public class JNode {
             e.printStackTrace();
         }
         parent.popStyle();
+    }
+
+    /**
+     * TODO debug
+     *
+     * @since May 1st. User will not need to plug transfer the processing specific
+     * mousePressed, mouseReleased, dragged and key events by hand. This is a update
+     * that truly makes a difference.
+     */
+    private static void transferInputEvents() {
+        if (parent.mousePressed) {
+            if (mouseIsPressed) {
+                //the mouse dragged event transferring mechanism goes here.
+                if (initMousePosRecorded) {
+                    if (parent.mouseX != recordedMousePos[0] || parent.mouseY != recordedMousePos[1]) {
+                        JNode.mouseDragged();
+                        recordedMousePos = new int[]{parent.mouseX, parent.mouseY};
+                    }
+                } else {
+                    recordedMousePos = new int[]{parent.mouseX, parent.mouseY};
+                    initMousePosRecorded = true;
+                }
+            } else {
+                JNode.mousePressed();
+                mouseIsPressed = true;
+            }
+        } else {
+            initMousePosRecorded = false;
+            if (mouseIsPressed) {
+                JNode.mouseReleased();
+                mouseIsPressed = false;
+            }
+        }
+        //TODO key events listener
+
     }
 
     /**
@@ -212,10 +253,10 @@ public class JNode {
     }
 
     /**
-     * @param obj
+     * @param obj the displayable object to be removed.
      */
     public static void remove(Displayable obj) {
-        //removing from displayables arraylist, which contains reference to all objects
+        //removing from displayables ArrayList, which contains reference to all objects
         parent.noLoop();
         /*this is here to prevent ConcurrentModificationException when another thread tries to
         remove a displayable object while the main loop of processing is iterating through it*/

@@ -171,7 +171,7 @@ public class Main extends PApplet {
             updateProgressBar(initMessages[(int) (Math.random() * initMessages.length)]);
         }
     }
-
+/*
     public void mousePressed() {
         JNode.mousePressed();  //linking to node
     }
@@ -184,6 +184,7 @@ public class Main extends PApplet {
     public void mouseDragged() {
         JNode.mouseDragged();
     }
+    */
 
     public void keyPressed() {
         /*TODO this is for testing, delete*/

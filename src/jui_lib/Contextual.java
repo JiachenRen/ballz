@@ -308,4 +308,12 @@ public abstract class Contextual extends Displayable implements KeyControl {
             });
         }
     }
+
+    public int getMouseOverTextColor() {
+        return mouseOverTextColor;
+    }
+
+    public int getMousePressedTextColor(){
+        return mousePressedTextColor;
+    }
 }

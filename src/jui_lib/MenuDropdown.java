@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class MenuDropdown extends Contextual implements MouseControl {
     //add set dropdown contour & rounded
     private ArrayList<MenuItem> menuItems;
-    public int itemHeight;
+    public float itemHeight;
     public boolean triggered; //to determine if the action is driven by its parent. 3 hours of debugging!!!
     public boolean mouseTriggering, keyTriggering;
     public int triggeringMouseButton;
@@ -76,9 +76,8 @@ public class MenuDropdown extends Contextual implements MouseControl {
     }
 
     public boolean hasFocus() {
-        if (triggered && !isMouseOver()) return false;
-        return triggered;
-        /*
+        return !(triggered && !isMouseOver()) && triggered;
+/*
         for (MenuItem m : menuItems) {
             if (m.hasFocus())
                 return true;
@@ -117,7 +116,8 @@ public class MenuDropdown extends Contextual implements MouseControl {
         if (mouseTriggering && triggeringMouseButton == getParent().mouseButton) {
             //System.out.println("MouseReleased: "+getParent().mouseButton+" Current: "+triggeringMouseButton);
             this.setVisible(!this.isVisible());
-            if (isVisible()) triggeringEvent.run();
+            if (isVisible()&&triggeringEvent!=null)
+                triggeringEvent.run();
 
         }
         if (!isVisible()) return;
@@ -157,7 +157,7 @@ public class MenuDropdown extends Contextual implements MouseControl {
                 downKeyCodes.add(getParent().keyCode);
             if (containsAll(downKeyCodes, triggeringKeys)) {
                 this.setVisible(!this.isVisible());
-                if (isVisible())
+                if (isVisible()&&triggeringEvent!=null)
                     triggeringEvent.run();
             }
         }
@@ -176,8 +176,9 @@ public class MenuDropdown extends Contextual implements MouseControl {
         }
     }
 
+    @Deprecated
     public void mouseDragged() {
-        //deprecated
+
     }
 
     private void init() {
@@ -191,11 +192,6 @@ public class MenuDropdown extends Contextual implements MouseControl {
 
         //defaults to right click trigger. Defaults to not enabled.
         triggeringMouseButton = PConstants.RIGHT;
-        triggeringEvent = new Runnable() {
-            @Override
-            public void run() {
-            }
-        };
 
         setVisible(false);
         alignment = PConstants.LEFT;
@@ -215,22 +211,9 @@ public class MenuDropdown extends Contextual implements MouseControl {
         return this;
     }
 
-    public void arrange() {
-        for (MenuItem menuItem : menuItems) {
-            menuItem.setContourVisible(this.displayContour);
-            menuItem.setBackgroundColor(this.backgroundColor);
-            menuItem.setContourThickness(this.contourThickness);
-            menuItem.setContourColor(this.contourColor);
-            menuItem.setTextColor(this.getTextColor());
-            menuItem.setMouseOverBackgroundColor(this.mouseOverBackgroundColor);
-            menuItem.setMousePressedBackgroundColor(this.mousePressedBackgroundColor);
-            menuItem.setAlign(this.alignment);
-            menuItem.setVisible(this.isVisible);
-            menuItem.setTextFont(this.font);
-            menuItem.setTextSize(getTextSize());
-            menuItem.setRounded(this.isRounded);
-        }
-        itemHeight = (int) getTextHeight();
+    private void arrange() {
+        Container.applyOutlookToNodes(this,menuItems,false);
+        itemHeight =getTextHeight();
         float itemWidth = 0;
         for (MenuItem menuItem : menuItems) {
             if (getTextWidth(menuItem.getContent()) > itemWidth)

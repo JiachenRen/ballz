@@ -813,7 +813,7 @@ public class Main extends PApplet {
         mainFrame.setMouseOverBackgroundColor(50, 255, 100, 180);
         mainFrame.setSpacing(3);
         mainFrame.setMargins(3, 3);
-        mainFrame.applyStyleToNodes();
+        mainFrame.applyOutlookToNodes();
         */
 
         context.setBackgroundColor(colorSelector.getColorRGBA("Background"));

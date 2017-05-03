@@ -9,7 +9,6 @@ import processing.core.PFont;
 //modified Jan 26th
 //incorporating into GitHub. Jan 27th
 public class JuiTemplate extends PApplet {
-    private PFont f, fbig;
     private int brightness = 100;
     private boolean updatingOnDrag; //updates the display when the slider in the middle is dragged.
     private float window_w, window_h;
@@ -33,8 +32,6 @@ public class JuiTemplate extends PApplet {
         println((Object) PFont.list());
         //fullScreen(FX2D);
         surface.setResizable(true);// this is truly exciting!!! Jan 26th.
-        f = createFont("Seravek-Regular", 100);
-        fbig = createFont("Seravek-Regular", 150);
         //JNode.setUniFont(fbig); //default font for all objects.
         //Incorporated into init().
 
@@ -56,11 +53,11 @@ public class JuiTemplate extends PApplet {
         //b1.resize(width/2,height/2);
         b14.setMargins(0, 0);
         //b14.setSpacing(20);
-        b11.setAlignV(DOWN);
+        b11.setAlignV(UP);
         b2.setMargins(0, 0);
         b5.setMargins(0, 0);
         b13.setMargins(0, 0);
-        b12.setAlignV(DOWN);
+        b12.setAlignV(UP);
         b12.setMargins(3, 3);
         b8.setMargins(0, 0);
 
@@ -179,8 +176,8 @@ public class JuiTemplate extends PApplet {
         s2.setScalingFactor(.5f);
         s2.onFocusMethod = () -> {
             brightness = JNode.getSliderById("slider_brightness").getIntValue();
-            if (updatingOnDrag)
-                refresh(); // OPTIONAL
+            if (updatingOnDrag);
+                //refresh(); // OPTIONAL
         };
         b13.add(s2);
 
@@ -200,15 +197,13 @@ public class JuiTemplate extends PApplet {
         bu2 = new Button("exit", .3f, 1);
         bu2.setContent("EXIT");
         //bu2.setVisible(false); //testing bug fix Jan 28th, 11:36 PM
-        bu2.setTextFont(fbig);
         bu2.onClick(() -> Runtime.getRuntime().exit(0));
         b14.add(bu2);
 
         Button bu3;
         bu3 = new Button("refresh");
         bu3.setContent("REFRESH");
-        bu3.setTextFont(fbig);
-        bu3.onClick(this::refresh);
+        //bu3.onClick(this::refresh);
         b14.add(bu3);
 
         //created Jan 29th. 8:47PM. VSlider demo.
@@ -326,7 +321,6 @@ public class JuiTemplate extends PApplet {
         m.setTextFont(createFont("Verdana-BoldItalic",10));
 
         JNode.addAll(m); //only the top level MenuDropdown instance should be added into the JNode.
-        refresh();
         //for some reason the println has to be after the setup. Resolved Jan 25th.
 
         window_w = width;
@@ -342,7 +336,7 @@ public class JuiTemplate extends PApplet {
         }
         JNode.run();
     }
-
+/*
     public void refresh() {
 
         for (Displayable d : JNode.getDisplayables()) {
@@ -368,6 +362,7 @@ public class JuiTemplate extends PApplet {
 
     }
 
+    /*
     public void mousePressed() {
         JNode.mousePressed();  //linking to node
     }
@@ -379,6 +374,7 @@ public class JuiTemplate extends PApplet {
     public void mouseDragged() {
         JNode.mouseDragged();
     }
+    */
 
     public void keyPressed() {
         JNode.keyPressed();

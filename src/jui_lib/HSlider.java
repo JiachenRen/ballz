@@ -3,6 +3,12 @@ package jui_lib;
 import processing.core.PConstants;
 
 public class HSlider extends Slider implements MouseControl {
+    {
+        setRollerScalingHeight(1.5f);
+        setRollerScalingWidth(.5f);
+        setRollerScalingRadius(.6f);
+        syncSettings();
+    }
 
     public HSlider(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
@@ -14,13 +20,6 @@ public class HSlider extends Slider implements MouseControl {
 
     public HSlider(String id) {
         super(id);
-    }
-
-    public void childDefinedInit() {
-        setRollerScalingHeight(1.5f);
-        setRollerScalingWidth(.5f);
-        setRollerScalingRadius(.6f);
-        syncSettings();
     }
 
     public void syncSettings() {

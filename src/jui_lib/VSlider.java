@@ -4,6 +4,13 @@ import processing.core.PConstants;
 
 public class VSlider extends Slider implements MouseControl {
 
+    {
+        setRollerScalingHeight(.5f);
+        setRollerScalingWidth(1.5f);
+        setRollerScalingRadius(.6f);
+        syncSettings();
+    }
+
     public VSlider(String id, float x, float y, float w, float h) {
         super(id, x, y, w, h);
     }
@@ -16,36 +23,36 @@ public class VSlider extends Slider implements MouseControl {
         super(id);
     }
 
-    public void childDefinedInit() {
-        setRollerScalingHeight(.5f);
-        setRollerScalingWidth(1.5f);
-        setRollerScalingRadius(.6f);
-        syncSettings();
-    }
-
     /**
      * Jan 4th, Roller Shape Ellipse needs to be added
      * updates the position of the roller.
+     *
      * @since April 24th roller ellipse shape is considered.
      */
     public void updateRollerPos() {
         if (val > valueHigh || val < valueLow) {
             if (val != valueLow && val != valueHigh)
-                System.err.println("ERROR: slider value cannot be set to " + val + ", out of range(" + valueLow + "->" + valueHigh + ")");
+                System.err.println(id + " : slider value cannot be set to " + val + ", out of range(" + valueLow + "->" + valueHigh + ")");
             return;
         }
         float temp = roller.shape == PConstants.ELLIPSE ? roller.r * 2 : roller.h;
-        roller.setY(this.y + barHeight - temp / 2.0f - (val - valueLow) / (valueHigh - valueLow) * (barHeight - temp));
+        float offset = (val - valueLow) / (valueHigh - valueLow) * (barHeight - temp);
+        roller.setY(this.y + barHeight - temp / 2.0f - offset);
     }
 
 
+    /**
+     * @since May 2nd bug fixes. A bunch of unnecessary int casts were taken out
+     * Synchronizes the appearance and dimension of the rectangular slider bar and
+     * the roller according to the new dimension of the displayable object.
+     */
     public void syncSettings() {
-        barWidth = (int) (w * barScalingFactor);
+        barWidth = w * barScalingFactor;
         if (roller.shape == PConstants.RECT) roller.y = y + h - roller.h / 2;
         else roller.y = y + h - roller.r;
         roller.x = x + w / 2;
-        roller.setEllipse((int) (barWidth * getRollerScalingRadius()));
-        roller.setRect((int) (barWidth * getRollerScalingWidth()), (int) (barWidth * getRollerScalingHeight()));
+        roller.setEllipse(barWidth * getRollerScalingRadius());
+        roller.setRect(barWidth * getRollerScalingWidth(), barWidth * getRollerScalingHeight());
         barHeight = h;
     }
 
@@ -77,7 +84,7 @@ public class VSlider extends Slider implements MouseControl {
         super.mousePressed();
         if (mouseOverBar())
             roller.y = getParent().mouseY;
-        if(mouseOverRoller())
+        if (mouseOverRoller() && onFocusMethod != null)
             onFocusMethod.run();
     }
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
-//idea, Jan 21. Chaining up the methods so they return itself, allowing syntaxes such as setHeight().setWidth().
+//idea, Jan 21. Chaining up the methods so they return itself, allowing syntax such as setHeight().setWidth().
 //spit into JNode instances and static back_end controls.
 //Don't forget to add Tables!!
 public class JNode {
@@ -59,6 +59,19 @@ public class JNode {
     private static boolean initMousePosRecorded;
     private static boolean keyIsPressed;
 
+    /**
+     * for now, as of May 2nd, the automatic event transferring mechanism only covers
+     * mouse events, not including mouseWheel(). It does not support key events. In order
+     * for JNode to work properly, it needs to be properly linked to one specific processing
+     * PApplet instance's keyPressed(), keyReleased(), and mouseWheel() method with the
+     * following syntax(should be located in a subclass of PApplet):
+     *
+     * public void keyPressed(){JNode.keyPressed();}
+     * public void keyReleased(){JNode.keyReleased();}
+     * public void mouseWheel(){JNode.mouseWheel();}
+     */
+    private static boolean automaticEventTransferring = true;
+
     public static void init(PApplet p) {
         parent = p;
         textInputs = new ArrayList<>();
@@ -75,6 +88,10 @@ public class JNode {
         importStyle("default");
     }
 
+    /**
+     * loops through all JUI displayable instances, draw them where needed and
+     * transfer mouse, key events wherever requested.
+     */
     public static void run() {
         JNode.transferInputEvents();
         parent.pushStyle();
@@ -264,11 +281,11 @@ public class JNode {
         for (int i = displayables.size() - 1; i >= 0; i--)
             if (displayables.get(i) == obj) displayables.remove(i);
 
-        //removing from contextuals arraylist, which contains reference to all contextualizable displayables
+        //removing from contextuals ArrayList, which contains reference to all contextual instances
         for (int i = contextuals.size() - 1; i >= 0; i--)
             if (contextuals.get(i) == obj) contextuals.remove(i);
 
-        //removing from specific object arraylists
+        //removing from specific object ArrayLists
         for (int i = textInputs.size() - 1; i >= 0; i--)
             if (textInputs.get(i) == obj) textInputs.remove(i);
         for (int i = scrollFields.size() - 1; i >= 0; i--)
@@ -282,7 +299,7 @@ public class JNode {
         for (int i = sliders.size() - 1; i >= 0; i--)
             if (sliders.get(i) == obj) sliders.remove(i);
 
-        //removing from containers, call should be passed to every single sub-containers to remove all objs.
+        //removing from containers, call should be passed to every single sub-containers to remove all objects.
         for (int i = containers.size() - 1; i >= 0; i--) {
             Container container = containers.get(i);
             if (container == obj) {

@@ -12,8 +12,6 @@ public class MenuItem extends Label implements MouseControl {
     public MenuItem(String id, String content) {
         super(id);
         super.setContent(content);
-        onClickMethod = () -> {
-        };
     }
 
     public MenuItem onClick(Runnable r) {
@@ -30,7 +28,8 @@ public class MenuItem extends Label implements MouseControl {
     }
 
     public void mouseReleased() {
-        if (isVisible() && isMouseOver() && mousePressedOnButton) onClickMethod.run();
+        if (isVisible() && isMouseOver() && mousePressedOnButton)
+            if (onClickMethod != null) onClickMethod.run();
         mousePressedOnButton = false;
         if (menu != null && expandable) {
             menu.mouseReleased();
@@ -89,7 +88,6 @@ public class MenuItem extends Label implements MouseControl {
             menu.triggered = false;
         if (hasFocus()) {
             menu.relocate(getX() + getWidth(), getY());
-            menu.arrange();
             menu.setVisible(true);
             menu.run();//modified Jan 25th
         } else {
@@ -99,14 +97,14 @@ public class MenuItem extends Label implements MouseControl {
 
     public void display() {
         if (expandable && menu != null) update();
-        //drawing the background
-        if (font != null) getParent().textFont(font);
-        if (displayContour) {
-            getParent().strokeWeight(contourThickness);
-            getParent().stroke(contourColor);
-        } else {
-            getParent().noStroke();
-        }
+        this.applyContourStyle();
+        this.applyBackgroundStyle();
+        super.drawRect();
+        super.displayText();
+    }
+
+    @Override
+    public void applyBackgroundStyle() {
         if (expandable) {
             if (menu == null) {
                 getParent().fill(hasFocus() ? mouseOverBackgroundColor : backgroundColor);
@@ -116,12 +114,6 @@ public class MenuItem extends Label implements MouseControl {
         } else {
             getParent().fill(hasFocus() ? mouseOverBackgroundColor : backgroundColor);
         }
-        if (isRounded) {
-            getParent().rect(x, y, w, h, rounding);
-        } else {
-            getParent().rect(x, y, w, h);
-        }
-        super.displayText();
     }
 
     @Deprecated

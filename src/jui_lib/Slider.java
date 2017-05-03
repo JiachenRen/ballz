@@ -12,7 +12,7 @@ code refactored Jan 29th. VSlider Class created.
 Idea Jan 29th: add slider progress bar.
 code refactored Feb 4th. Added progress bar modified for both VSlider and VSlider.
 */
-public abstract class Slider extends Displayable implements MouseControl,Scalable {
+public abstract class Slider extends Displayable implements MouseControl, Scalable {
     public float barScalingFactor = 1;
     public boolean snapToGrid, displayGrid, displayNumericScale;
     public boolean isLockedOn;
@@ -65,9 +65,14 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
     /*TODO should I keep this here?*/
     public abstract void mouseDragged();
 
+    /**
+     * @since May 2nd
+     * the mouseOverRoller() || mouseOverRoller() is changed for mouseOverBar() for better interface experience.
+     * this way it supports click and dragging simultaneously as opposed to discretely.
+     */
     public void mousePressed() {
         super.mousePressed();
-        if (roller.isMouseOver())
+        if (mouseOverBar()||mouseOverRoller())
             isLockedOn = true;
     }
 
@@ -142,12 +147,7 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
         if (onFocusMethod != null && isLockedOn) {
             onFocusMethod.run();
         }
-        if (displayContour) {
-            getParent().strokeWeight(contourThickness);
-            getParent().stroke(contourColor);
-        } else {
-            getParent().noStroke();
-        }
+        this.applyContourStyle();
 
         //drawing the slider bar
         getParent().pushStyle();
@@ -207,8 +207,6 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
     /*added April 22nd*/
     public abstract void updateRollerPos();
 
-    public abstract void childDefinedInit();
-
     public abstract void syncSettings();
 
     public void init() {
@@ -219,7 +217,6 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
         rollerBackgroundColor = backgroundColor;
         setProgressBackgroundColor(mouseOverBackgroundColor);
         setDisplayingProgress(true); // created Feb 4th. [optional]
-        childDefinedInit();
     }
 
     public float getRollerScalingWidth() {
@@ -342,6 +339,12 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
         }
     }
 
+    /**
+     * This method is overridden so that each component of the slider would be
+     * resized properly according to the dimension of this displayable instance.
+     * @param w the new width for the slider
+     * @param h the new height for the slider.
+     */
     @Override
     public void resize(float w, float h) {
         super.resize(w, h);
@@ -349,6 +352,13 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
         updateRollerPos(); //April 22nd
     }
 
+    /**
+     * The relocation mechanism is overridden so that the change that need
+     * to be made to the position of the roller could also be taken into
+     * consideration.
+     * @param x x-coordinate on screen.
+     * @param y y-coordinate on screen.
+     */
     @Override
     public void relocate(float x, float y) {
         super.relocate(x, y);
@@ -358,8 +368,13 @@ public abstract class Slider extends Displayable implements MouseControl,Scalabl
         updateRollerPos(); //Feb 4th
     }
 
-    public Slider setRollerVisible(boolean temp) {
-        rollerVisible = temp;
+    /**
+     * Even if the roller is not visible, it would still be in place.
+     * @param rollerVisible boolean value
+     * @return this instance of slider
+     */
+    public Slider setRollerVisible(boolean rollerVisible) {
+        this.rollerVisible = rollerVisible;
         return this;
     }
 }

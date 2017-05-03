@@ -5,7 +5,6 @@ import processing.core.PConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
 //code refactored Jan 20th
 //idea: Jan 21th, granting both the VBox and HBox the ability to actualize both relative width and height.
@@ -267,32 +266,78 @@ public abstract class Container extends Displayable {
         return this;
     }
 
-    public Container applyStyleToNodes() {
-        for (int i = displayables.size() - 1; i >= 0; i--) {
-            Displayable displayable = displayables.get(i);
-            displayable.setBackgroundColor(backgroundColor);
-            displayable.setMouseOverBackgroundColor(mouseOverBackgroundColor);
-            displayable.setMousePressedBackgroundColor(mousePressedBackgroundColor);
-            displayable.setContourColor(backgroundColor);
-            displayable.setMouseOverContourColor(mouseOverBackgroundColor);
-            displayable.setMousePressedContourColor(mousePressedBackgroundColor);
-            //TODO displayable.setBackgroundStyle(backgroundStyle);
-            displayable.setContourVisible(displayContour);
-            displayable.setContourThickness(contourThickness);
-            displayable.setRounded(isRounded);
-            displayable.setRounding(rounding);
-            /* TODO to be implemented
-            if (displayable instanceof Contextual){
-                displayable.setTex
-            }
-            */
-            /*instanceof, learned April 22nd.*/
-            if (displayable instanceof Container) {
-                Container container = (Container) displayable;
-                container.applyStyleToNodes();
-            }
-        }
+    /**
+     * Apply the outlook of this container to all of its nodes. Overloading method of the root method
+     * applyOutlookToNodes(Displayable root, ArrayList<Displayable> nodes, boolean recursive, Class... omits);
+     * see details below.
+     *
+     * @return this instance of Container for chained access.
+     */
+    public Container applyOutlookToNodes() {
+        Container.applyOutlookToNodes(this, displayables, true);
         return this;
+    }
+
+
+    /**
+     * Overloading method of the root method
+     * applyOutlookToNodes(Displayable root, ArrayList<Displayable> nodes, boolean recursive, Class... omits);
+     * see details below.
+     *
+     * @since May 2nd.
+     */
+    public static void applyOutlookToNodes(Displayable root, ArrayList<?> nodes, boolean recursive) {
+        Container.applyOutlookToNodes(root, nodes, recursive, null, null);
+    }
+
+
+    /**
+     * apply the outlook of the root displayable to all of the displayable instances in the nodes. Type specific
+     * appearances are transferred where possible. The method automatically determines the type of root and the
+     * type of the instances in the nodes ArrayList and transfer compatible appearances where possible.
+     *
+     * @param root      the root displayable instance, i.e. the displayable instance in which the outlook of the
+     *                  displayable instances in the nodes would be based on.
+     * @param nodes     a displayable ArrayList that contains a list of displayable objects whose outlook are
+     *                  going to be altered according to the root displayable obj.
+     * @param recursive if this boolean value is set to true, then the effect would propagate to the very last
+     *                  leaf nodes in any of the containers contained within the nodes ArrayList and for any
+     *                  containers contained within these containers.
+     * @param omits     the class types to be omitted from this specific operation. for example, if you only want to
+     *                  change the outlook of buttons in the nodes of ArrayList and not the labels, then you can pass
+     *                  in Label.class as an omitted class. The post condition in this case would be that none of the
+     *                  label instances contained in nodes would be altered.
+     * @since May 2nd.
+     */
+    public static void applyOutlookToNodes(Displayable root, ArrayList<?> nodes, boolean recursive, Class... omits) {
+        nodes.forEach(unknownDisplayable -> {
+            Displayable displayable = (Displayable) unknownDisplayable;
+            for (Class class_ : omits) {
+                if (class_ == null) continue;
+                String temp = class_.getSimpleName();
+                if (displayable.getClass().getSimpleName().equals(temp))
+                    return;
+            }
+            displayable.setBackgroundColor(root.backgroundColor);
+            displayable.setMouseOverBackgroundColor(root.mouseOverBackgroundColor);
+            displayable.setMousePressedBackgroundColor(root.mousePressedBackgroundColor);
+            displayable.setContourColor(root.backgroundColor);
+            displayable.setMouseOverContourColor(root.mouseOverBackgroundColor);
+            displayable.setMousePressedContourColor(root.mousePressedBackgroundColor);
+            displayable.setContourVisible(root.displayContour);
+            displayable.setContourThickness(root.contourThickness);
+            displayable.setRounded(root.isRounded);
+            displayable.setRounding(root.rounding);
+            if (displayable instanceof Contextual && root instanceof Contextual) {
+                ((Contextual) displayable).setTextColor(((Contextual) root).getTextColor());
+                ((Contextual) displayable).setMouseOverTextColor(((Contextual) root).getMouseOverTextColor());
+                ((Contextual) displayable).setMousePressedTextColor(((Contextual) root).getMousePressedTextColor());
+            }
+            if (recursive && displayable instanceof Container) {
+                Container container = (Container) displayable;
+                applyOutlookToNodes(root, container.getDisplayables(), true, omits);
+            }
+        });
     }
 
     /**

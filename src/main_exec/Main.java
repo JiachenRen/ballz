@@ -826,6 +826,9 @@ public class Main extends PApplet {
 
         /*
         try this! Amazing!
+        dynamic background generation
+        */
+
         for (Displayable displayable: JNode.getDisplayables()){
             displayable.addEventListener(Event.MOUSE_ENTERED,()->{
                 displayable.setBackgroundColor(0,0,0,10);
@@ -834,7 +837,6 @@ public class Main extends PApplet {
                 displayable.setBackgroundColor(JNode.BACKGROUND_COLOR);
             });
         }
-        */
     }
 }
 

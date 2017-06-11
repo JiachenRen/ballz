@@ -1,4 +1,6 @@
 package jui_lib;
 
-public class Canvas {
+import processing.javafx.PGraphicsFX2D;
+
+public class Canvas extends PGraphicsFX2D{
 }

@@ -634,7 +634,7 @@ public class Main extends PApplet {
 
         /*Color Selector for various objects in the game*/
         ColorSelector colorSelector = new ColorSelector("colorSelector", 1.0f, .3f);
-        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background", "UI Text", "UI App", "Mse Over");
+        colorSelector.setLinkedColorVars("Balls", "Debris", "Bonus", "Score", "Display", "Background", "UI Text", "UI App","Mse Over");
         colorSelector.setColorRGBA("Balls", 255, 255, 255, 255);
         colorSelector.setColorRGBA("Debris", 255, 200, 10, 200);
         colorSelector.setColorRGBA("Background", 0, 0, 0, 255);
@@ -643,6 +643,7 @@ public class Main extends PApplet {
         colorSelector.setColorRGBA("Display", 255, 255, 255, 255);
         colorSelector.setColorRGBA("UI Text", 0, 0, 0, 255);
         colorSelector.setColorRGBA("UI App", 50, 50, 50, 50);
+        colorSelector.setColorRGBA("Mse Over", 130, 200, 200, 50);
 
         colorSelector.link("Display", () -> {
             displayColor = colorSelector.getColorRGBA("Display");

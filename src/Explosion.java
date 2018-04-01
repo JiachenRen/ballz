@@ -1,5 +1,3 @@
-package game_objs;
-
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -34,7 +32,7 @@ public class Explosion {
         }
     }
 
-    public void update() {
+    void update() {
         for (int i = cluster.size() - 1; i >= 0; i--) {
             Debris debris = cluster.get(i);
             debris.update();
@@ -51,7 +49,7 @@ public class Explosion {
     }
 
     /*if all the debris in this explosion has disappeared, the explosion itself expires.*/
-    public boolean expired() {
+    boolean expired() {
         return cluster.size() == 0;
     }
 

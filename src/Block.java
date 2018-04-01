@@ -1,8 +1,5 @@
-package game_objs;
-
 import jui.Contextual;
 import jui.JNode;
-import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
@@ -20,7 +17,7 @@ public class Block extends Contextual {
     */
     private static PFont textFont = JNode.getParent().createFont("Seravek-Regular", 120);
 
-    public Block(PApplet parent, float x, float y, float w, float h, int value) {
+    Block(PApplet parent, float x, float y, float w, float h, int value) {
         super("", x, y, w, h);
         this.parent = parent;
         this.value = value;
@@ -105,15 +102,15 @@ public class Block extends Contextual {
         return textSize < 3 ? 3 : textSize;
     }
 
-    public int getValue() {
+    int getValue() {
         return value;
     }
 
-    public boolean isPenetrable() {
+    boolean isPenetrable() {
         return isPenetrable;
     }
 
-    public void setValue(int value) {
+    void setValue(int value) {
         this.value = value;
     }
 

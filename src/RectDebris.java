@@ -1,6 +1,3 @@
-package game_objs;
-
-import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 

@@ -1,7 +1,4 @@
-package game_objs;
-
 import jui.Displayable;
-import Main;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -50,7 +47,7 @@ public class BlockRow extends Displayable {
         }
     }
 
-    public ArrayList<Block> getBlocks() {
+    ArrayList<Block> getBlocks() {
         return blocks;
     }
 
@@ -70,11 +67,11 @@ public class BlockRow extends Displayable {
         }
     }
 
-    public int getCurrentStack() {
+    int getCurrentStack() {
         return currentStack;
     }
 
-    public void stack() {
+    void stack() {
         currentStack++;
     }
 }

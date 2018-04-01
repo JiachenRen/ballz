@@ -1,5 +1,3 @@
-import game_objs.Ball;
-import game_objs.Context;
 import jui.*;
 import jui.bundles.ColorSelector;
 import jui.bundles.ProgressIndicator;
@@ -14,13 +12,6 @@ import java.util.ArrayList;
 /*template for JUI designing created by Jiachen Ren, Jan 29th. All Rights Reserved */
 /*Ballz PC/Mac replication. Created by Jiachen Ren on April 20th*/
 public class Main extends PApplet {
-    private static Context context;
-    private static VBox gamePanel;
-    private static HBox mainFrame;
-    private static VBox settingsPanel;
-    private static VBox advancedPanel;
-    private static ProgressIndicator progressIndicator;
-
     /**
      * game specific attributes
      */
@@ -32,14 +23,10 @@ public class Main extends PApplet {
     public static int fps = 200;
     public static int level = 1; /*represents the current level; default 1; Try 1500*/
     public static int firingRate = 100;
-    private static float gamePanelPercentage = .7f; //try .75
-    private static float contextPercentage = 1.0f;
     public static int rows = 15;
     public static int columns = 20;
     public static int columnGap = 5;
     public static int rowGap = columnGap / (int) 2.0f;
-    private static int fakeDelayMillis = 100;
-
     /**
      * colors
      */
@@ -57,26 +44,7 @@ public class Main extends PApplet {
      */
     public static int highScore;
     public static int score;
-
-    /**
-     * images to be imported from /data dir
-     */
-    private PImage playButtonImg;
-    private PImage pauseButtonImg;
-    private PImage restartButtonImg;
-    private PImage fastForwardButtonImg;
-
-    /**
-     * the booleans below exist to ensure that the images and settings only
-     * gets imported once.
-     */
-    private static boolean imgLoaded = false;
-    private static boolean settingsImported = false;
-    private static boolean applyFakeDelay = true;
-    private static boolean initialized = false;
-
     public static BufferedReader bufferedReader;
-
     public static String initMessages[] = new String[]{
             "Initializing JUI Control Node... please wait...",
             "Loading Images...",
@@ -85,11 +53,52 @@ public class Main extends PApplet {
             "Importing PApplet.core...",
             "Instantiating Game Specific Objects...",
     };
+    private static Context context;
+    private static VBox gamePanel;
+    private static HBox mainFrame;
+    private static VBox settingsPanel;
+    private static VBox advancedPanel;
+    private static ProgressIndicator progressIndicator;
+    private static float gamePanelPercentage = .7f; //try .75
+    private static float contextPercentage = 1.0f;
+    private static int fakeDelayMillis = 100;
+    /**
+     * the booleans below exist to ensure that the images and settings only
+     * gets imported once.
+     */
+    private static boolean imgLoaded = false;
+    private static boolean settingsImported = false;
+    private static boolean applyFakeDelay = true;
+    private static boolean initialized = false;
+    /**
+     * images to be imported from /data dir
+     */
+    private PImage playButtonImg;
+    private PImage pauseButtonImg;
+    private PImage restartButtonImg;
+    private PImage fastForwardButtonImg;
 
     public static void main(String args[]) {
         System.out.println("Ballz Mac/PC Version. Created by Jiachen Ren on April 20th");
         String sketch = Thread.currentThread().getStackTrace()[1].getClassName();
         PApplet.main(sketch);
+    }
+
+    /**
+     * the method rewrites the records.txt file.
+     *
+     * @param keyWord the keyword(string) that precedes the value
+     * @param val     the value that is been used to replace the old one
+     */
+    public static void record(String keyWord, Number val) {
+        PApplet parent = JNode.getParent();
+        String lines[] = parent.loadStrings("data/records.txt");
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains(keyWord)) {
+                lines[i] = keyWord + ":" + val.toString();
+            }
+        }
+        parent.saveStrings("data/records.txt", lines);
     }
 
     public void settings() {
@@ -131,23 +140,6 @@ public class Main extends PApplet {
             }
         }
         settingsImported = true;
-    }
-
-    /**
-     * the method rewrites the records.txt file.
-     *
-     * @param keyWord the keyword(string) that precedes the value
-     * @param val     the value that is been used to replace the old one
-     */
-    public static void record(String keyWord, Number val) {
-        PApplet parent = JNode.getParent();
-        String lines[] = parent.loadStrings("data/records.txt");
-        for (int i = 0; i < lines.length; i++) {
-            if (lines[i].contains(keyWord)) {
-                lines[i] = keyWord + ":" + val.toString();
-            }
-        }
-        parent.saveStrings("data/records.txt", lines);
     }
 
     public void setup() {

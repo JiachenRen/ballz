@@ -1,6 +1,3 @@
-package game_objs;
-
-import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -12,7 +9,7 @@ public class Bonus extends Block {
     private float noiseSeed;
     private float amp;
 
-    public Bonus(PApplet parent, float x, float y, float w, float h) {
+    Bonus(PApplet parent, float x, float y, float w, float h) {
         super(parent, x, y, w, h, -1);
         setBackgroundColor(255);
         radius = (w > h ? h : w) / 6.0f;
@@ -37,7 +34,7 @@ public class Bonus extends Block {
         noiseSeed += PApplet.map(Main.fps,60,200,.2f,0.06f);
     }
 
-    public boolean inRangeWith(Ball ball) {
+    boolean inRangeWith(Ball ball) {
         return PApplet.dist(ball.getPos().x, ball.getPos().y, x + w / 2.0f, y + h / 2.0f) <= radius + ball.getDiameter() / 2.0;
     }
 }

@@ -1,6 +1,3 @@
-package game_objs;
-
-import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
@@ -20,7 +17,7 @@ public class Ball {
     private PApplet parent;
     private boolean expired;
     private boolean animationCompleted;
-    public static boolean initPosRecorded = false;
+    static boolean initPosRecorded = false;
     /*if the initial x coordinate is recorded. This is indicated by the first ball arrived at the base line*/
     private static float initPosX, initPosY;
 
@@ -108,7 +105,7 @@ public class Ball {
         return dir;
     }
 
-    public void setDiameter(int diameter) {
+    void setDiameter(int diameter) {
         this.diameter = diameter;
     }
 
@@ -129,7 +126,7 @@ public class Ball {
         return initPosX;
     }
 
-    public PVector getPrevPos() {
+    PVector getPrevPos() {
         return prevPos;
     }
 
@@ -144,7 +141,7 @@ public class Ball {
         return parent.millis() - timeCreated;
     }
 
-    public void setSpeed(float speed) {
+    void setSpeed(float speed) {
         this.speed = speed;
         dir.setMag(speed);
     }

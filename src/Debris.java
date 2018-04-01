@@ -1,5 +1,3 @@
-package game_objs;
-
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -7,13 +5,13 @@ import processing.core.PVector;
  * Debris Class.
  */
 public abstract class Debris {
+    private static final float accDamp = .95f;
+    PApplet parent;
     private PVector pos;
     private PVector dir;
-    private static final float accDamp = .95f;
     private float speed;
-    PApplet parent;
 
-    public Debris(PApplet parent, float speed, float x, float y) {
+    Debris(PApplet parent, float speed, float x, float y) {
         this.pos = new PVector(x, y);
         this.speed = speed;
         this.parent = parent;
@@ -30,18 +28,18 @@ public abstract class Debris {
         dir.setMag(speed);
     }
 
-    public void update() {
+    void update() {
         pos.add(dir);
 
         /*dampening acceleration*/
         dir.setMag(dir.mag() * accDamp);
     }
 
-    public PVector getPos() {
+    PVector getPos() {
         return pos;
     }
 
-    public boolean expired() {
+    boolean expired() {
         return dir.mag() <= 1.0f;
     }
 

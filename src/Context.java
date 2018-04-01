@@ -1,15 +1,12 @@
-package game_objs;
-
 import jui.Displayable;
 import jui.JNode;
 import jui.Label;
-import Main;
 import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 
-import static Main.highScore;
+
 
 /**
  * Context class, or the game's environment.
@@ -30,7 +27,7 @@ public class Context extends Displayable {
     private boolean isFiring;
     private boolean blockAdded;
     private boolean paused;
-    public static int numBalls; /*change back to private later*/
+    static int numBalls; /*change back to private later*/
     private boolean isAnimating;
 
     public Context(float x, float y, float w, float h) {
@@ -235,9 +232,9 @@ public class Context extends Displayable {
     private void checkStatus() {
         if (blockRows.size() == 0) return;
         if (blockRows.get(0).getCurrentStack() > maxRows) {
-            if (level > highScore)
-                highScore = level;
-            Main.record("high_score", highScore);
+            if (level > Main.highScore)
+                Main.highScore = level;
+            Main.record("high_score", Main.highScore);
             getParent().setup();
         }
     }

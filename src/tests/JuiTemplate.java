@@ -1,6 +1,6 @@
 package tests;
 
-import jui_lib.*;
+import jui.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 

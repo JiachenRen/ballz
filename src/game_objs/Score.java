@@ -4,7 +4,7 @@ package game_objs;
  * If the user hits this, a point is added
  */
 
-import main_exec.Main;
+import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;

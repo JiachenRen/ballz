@@ -1,7 +1,7 @@
 package game_objs;
 
-import jui_lib.Displayable;
-import main_exec.Main;
+import jui.Displayable;
+import Main;
 import processing.core.PApplet;
 
 import java.util.ArrayList;

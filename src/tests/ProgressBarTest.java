@@ -1,14 +1,9 @@
 package tests;
 
-import jui_lib.JNode;
-import jui_lib.ProgressBar;
-import jui_lib.VBox;
-import jui_lib.bundles.ColorSelector;
-import jui_lib.bundles.ProgressIndicator;
+import jui.JNode;
+import jui.ProgressBar;
+import jui.bundles.ProgressIndicator;
 import processing.core.PApplet;
-import sun.net.ProgressEvent;
-
-import javax.jnlp.JNLPRandomAccessFile;
 
 public class ProgressBarTest extends PApplet {
     private static float progress;

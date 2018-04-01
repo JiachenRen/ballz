@@ -1,6 +1,6 @@
 package game_objs;
 
-import main_exec.Main;
+import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;

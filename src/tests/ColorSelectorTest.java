@@ -1,9 +1,9 @@
 package tests;
 
-import jui_lib.HBox;
-import jui_lib.JNode;
-import jui_lib.bundles.ColorSelector;
-import jui_lib.bundles.ValueSelector;
+import jui.HBox;
+import jui.JNode;
+import jui.bundles.ColorSelector;
+import jui.bundles.ValueSelector;
 import processing.core.PApplet;
 
 public class ColorSelectorTest extends PApplet {

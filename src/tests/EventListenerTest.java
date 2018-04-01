@@ -1,8 +1,8 @@
 package tests;
 
-import jui_lib.Event;
-import jui_lib.JNode;
-import jui_lib.Label;
+import jui.Event;
+import jui.JNode;
+import jui.Label;
 import processing.core.PApplet;
 
 /**

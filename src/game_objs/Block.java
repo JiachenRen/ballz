@@ -1,9 +1,8 @@
 package game_objs;
 
-import jui_lib.Contextual;
-import jui_lib.Displayable;
-import jui_lib.JNode;
-import main_exec.Main;
+import jui.Contextual;
+import jui.JNode;
+import Main;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;

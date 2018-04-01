@@ -1,16 +1,15 @@
 package game_objs;
 
-import jui_lib.Displayable;
-import jui_lib.JNode;
-import jui_lib.Label;
-import main_exec.Main;
+import jui.Displayable;
+import jui.JNode;
+import jui.Label;
+import Main;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 
-import static main_exec.Main.highScore;
+import static Main.highScore;
 
 /**
  * Context class, or the game's environment.

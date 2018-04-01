@@ -1,10 +1,8 @@
 package tests;
 
-import jui_lib.Canvas;
-import jui_lib.JNode;
+import jui.JNode;
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.javafx.PGraphicsFX2D;
 
 /**
  * Created by Jiachen on 22/04/2017.

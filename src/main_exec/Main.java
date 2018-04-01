@@ -36,8 +36,8 @@ public class Main extends PApplet {
     public static int firingRate = 100;
     private static float gamePanelPercentage = .7f; //try .75
     private static float contextPercentage = 1.0f;
-    public static int rows = 8;
-    public static int columns = 7;
+    public static int rows = 15;
+    public static int columns = 20;
     public static int columnGap = 5;
     public static int rowGap = columnGap / (int) 2.0f;
     private static int fakeDelayMillis = 100;
